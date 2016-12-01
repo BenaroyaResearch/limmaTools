@@ -1,0 +1,17 @@
+Package: limmaTools
+Title: Helper functions for limma analysis and visualization of results
+Version: 0.0.0.9000
+Authors@R: person("Matthew", "Dufort", email = "matt.dufort@gmail.com", role = c("aut", "cre"))
+Description: This package includes several useful functions for processing and/
+    or plotting results of differential expression analysis using limma. It is
+    intended as an add-on to the limma package.
+Imports:
+	limma,
+    ggplot2,
+    stringr,
+    ordinal
+Depends:
+    R (>= 3.2.2)
+License: GPL-3
+LazyData: true
+RoxygenNote: 5.0.1
