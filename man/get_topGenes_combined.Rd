@@ -12,7 +12,7 @@ get_topGenes_combined(topGenes,
 \arguments{
 \item{topGenes}{a data frame, typically the output of a call to \code{topTable}. Must contain genes, log2 fold-change, and adjusted p-values.}
 
-\item{topGenes.pairwise}{a list of data frames, each typically containing the output of a call to \code{topTable} for a single contrast. Each list element should be named with an identifier for the contrast, and must contain genes, log2 fold-change, and adjusted p-values. Can optionally include a "threshold" column, which should be boolean indicating genes passing significance thresholds.}
+\item{topGenes.pairwise}{a list of data frames, each typically containing the output of a call to \code{topTable} for a single contrast. Each list element should be named with an identifier for the contrast, and must contain genes, log2 fold-change, and adjusted p-values. Can optionally include a "threshold" column, which should be logical indicating genes passing significance thresholds.}
 
 \item{p_cut}{numeric, the cutoff for adjusted p-value. Genes with adjusted p-values greater than or equal to this value are not considered significant.}
 
