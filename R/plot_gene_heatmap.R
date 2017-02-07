@@ -53,10 +53,14 @@ plot_gene_heatmap <-
           order_by_var_levels <- as.character(unique(design[,order_by_var]))
         design[,order_by_var] <- factor(design[,order_by_var], levels=order_by_var_levels) # set order
         }
-      counts <- counts[,order(design[, order_by_var])] # put columns in new order
+      counts <- 
+        counts[
+          ,match(
+            design[order(design[, order_by_var]), libID_col],
+            colnames(counts))] # put columns in new order
     }
     
-    # put design in order of counts
+    # now mirror the updated order of counts in design
     if (!is.null(design))
       design <- design[match(colnames(counts), design[,libID_col]),]
     
