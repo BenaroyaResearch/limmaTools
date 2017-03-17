@@ -5,16 +5,17 @@
 \title{Generate a volcano plot of genes from a differential expression (limma) analysis, with point color or shape determined by a variable of interest.}
 \usage{
 \code{
-plot_volcano_byvar_2var(topGenes, file_prefix=NULL, plotdims=c(9,9),
-                        fc_cut=log2(1.5), p_cut=0.01,
-                        color_by_var=NULL, color_by_var_levels=NULL, color_var_lab=NULL,
-                        my_cols=c("red","blue"), na_col="grey50",
-                        pch_by_var=NULL, pch_by_var_levels=NULL, pch_var_lab=NULL,
-                        my_pch=NULL,
-                        x_lim="auto", y_lim="auto",
-                        gene_labs=FALSE, x_cut=0, y_cut=0,
-                        point_order="random",
-                        ...)}
+plot_volcano_byvar_2var(
+     topGenes, file_prefix=NULL, plotdims=c(9,9),
+     fc_cut=log2(1.5), p_cut=0.01,
+     color_by_var=NULL, color_by_var_levels=NULL, color_var_lab=NULL,
+     my_cols=c("red","blue"), na_col="grey50",
+     pch_by_var=NULL, pch_by_var_levels=NULL, pch_var_lab=NULL,
+     my_pch=NULL,
+     x_lim="auto", y_lim="auto",
+     gene_labs=FALSE, x_cut=0, y_cut=0,
+     point_order="random",
+     ...)}
 }
 \arguments{
 \item{topGenes}{a data frame, typically the output of a call to \code{topTable}. Must contain genes, log2 fold-change, and adjusted p-values. If plotting shapes or colors by a variable, must contain a column matching that variable.}

@@ -5,12 +5,13 @@
 \title{Generate a set of volcano plots of genes from a differential expression (limma) analysis, for one or more contrasts}
 \usage{
 \code{
-plot_volcano_nvars(topGenes.pairwise, my_cols=c("darkcyan", "darkorange"),
-                   file_prefix=NULL, plotdims=c(9,9),
-                   fc_cut=log2(1.5), p_cut=0.01,
-                   x_lim="auto", y_lim="auto",
-                   gene_labs=FALSE, x_cut=0, y_cut=0,
-                   ...)}
+plot_volcano_nvars(
+     topGenes.pairwise, my_cols=c("darkcyan", "darkorange"),
+     file_prefix=NULL, plotdims=c(9,9),
+     fc_cut=log2(1.5), p_cut=0.01,
+     x_lim="auto", y_lim="auto",
+     gene_labs=FALSE, x_cut=0, y_cut=0,
+     ...)}
 }
 \arguments{
 \item{topGenes.pairwise}{a list of data frames, each typically containing the output of a call to \code{topTable} for a single contrast. Each list element should be named with an identifier for the contrast, and must contain genes, log2 fold-change, and adjusted p-values. Can optionally include a "threshold" column, which should be boolean indicating genes passing significance thresholds.}

@@ -28,104 +28,108 @@
 #' @import ggplot2
 #' @export
 #' @usage \code{
-#' plot_volcano_byvar_2var(topGenes, file_prefix=NULL, plotdims=c(9,9),
-#'                         fc_cut=log2(1.5), p_cut=0.01,
-#'                         color_by_var=NULL, color_by_var_levels=NULL, color_var_lab=NULL,
-#'                         my_cols=c("red","blue"), na_col="grey50",
-#'                         pch_by_var=NULL, pch_by_var_levels=NULL, pch_var_lab=NULL,
-#'                         my_pch=NULL,
-#'                         x_lim="auto", y_lim="auto",
-#'                         gene_labs=FALSE, x_cut=0, y_cut=0,
-#'                         point_order="random",
-#'                         ...)}
-plot_volcano_byvar_2var <- function(topGenes, file_prefix=NULL, plotdims=c(9,9),
-                                    fc_cut=log2(1.5), p_cut=0.01,
-                                    color_by_var=NULL, color_by_var_levels=NULL, color_var_lab=NULL,
-                                    my_cols=c("blue","red"), na_col="grey50",
-                                    pch_by_var=NULL, pch_by_var_levels=NULL, pch_var_lab=NULL, my_pch=NULL,
-                                    x_lim="auto", y_lim="auto",
-                                    gene_labs=FALSE, x_cut=0, y_cut=0,
-                                    point_order="random",
-                                    ...) {
-  if (identical(x_lim, "auto") | identical(y_lim, "auto")) {
-    xy_lims <- get_xy_lims(topGenes, min_x_abs=fc_cut, min_y2=-log10(p_cut))
-    if (identical(x_lim, "auto")) x_lim <- xy_lims[["x"]]
-    if (identical(y_lim, "auto")) y_lim <- xy_lims[["y"]]
-  }
-  
-  file_suffix <- "pdf"
-  
-  plot_color_by_var <- !is.null(color_by_var)
-  color_scale <- NULL; color_labs <- NULL; color_points <- NULL
-  if (plot_color_by_var) {
-    if (!is.numeric(topGenes[,color_by_var])) {
-      if (is.null(color_by_var_levels)) {
-        if (is.factor(topGenes[,color_by_var])) {
-          color_by_var_levels <- levels(topGenes[,color_by_var])
-        } else {
-          color_by_var_levels <- as.character(unique(na.omit(topGenes[,color_by_var])))
-          topGenes[,color_by_var] <- factor(topGenes[,color_by_var], levels=color_by_var_levels)
-        }
-      }
-      if (length(my_cols) < length(color_by_var_levels))
-        my_cols <- colorRampPalette(colors=my_cols)(length(color_by_var_levels))
-      color_scale <- scale_color_manual(values=my_cols, na.value=na_col)
-    } else {
-      color_scale <- scale_color_gradient(low=my_cols[1], high=my_cols[2], na.value=na_col)
+#' plot_volcano_byvar_2var(
+#'      topGenes, file_prefix=NULL, plotdims=c(9,9),
+#'      fc_cut=log2(1.5), p_cut=0.01,
+#'      color_by_var=NULL, color_by_var_levels=NULL, color_var_lab=NULL,
+#'      my_cols=c("red","blue"), na_col="grey50",
+#'      pch_by_var=NULL, pch_by_var_levels=NULL, pch_var_lab=NULL,
+#'      my_pch=NULL,
+#'      x_lim="auto", y_lim="auto",
+#'      gene_labs=FALSE, x_cut=0, y_cut=0,
+#'      point_order="random",
+#'      ...)}
+plot_volcano_byvar_2var <-
+  function(topGenes, file_prefix=NULL, plotdims=c(9,9),
+           fc_cut=log2(1.5), p_cut=0.01,
+           color_by_var=NULL, color_by_var_levels=NULL, color_var_lab=NULL,
+           my_cols=c("blue","red"), na_col="grey50",
+           pch_by_var=NULL, pch_by_var_levels=NULL, pch_var_lab=NULL, my_pch=NULL,
+           x_lim="auto", y_lim="auto",
+           gene_labs=FALSE, x_cut=0, y_cut=0,
+           point_order="random",
+           ...) {
+    if (identical(x_lim, "auto") | identical(y_lim, "auto")) {
+      xy_lims <- get_xy_lims(topGenes, min_x_abs=fc_cut, min_y2=-log10(p_cut))
+      if (identical(x_lim, "auto")) x_lim <- xy_lims[["x"]]
+      if (identical(y_lim, "auto")) y_lim <- xy_lims[["y"]]
     }
-    file_suffix <- paste0("color_by_", color_by_var, ".", file_suffix)
-    color_labs <- if (!is.null(color_var_lab)) labs(color=color_var_lab) else labs(color=color_by_var)
-    color_points <- geom_point(aes_string(color=color_by_var, fill=color_by_var))
-  }
-  
-  plot_pch_by_var <- !is.null(pch_by_var)
-  pch_scale <- NULL; pch_labs <- NULL; pch_points <- NULL
-  if (plot_pch_by_var) {
-    if (is.null(pch_by_var_levels)) pch_by_var_levels <- as.character(unique(na.omit(topGenes[,pch_by_var])))
-    topGenes[,pch_by_var] <- factor(topGenes[,pch_by_var], levels=pch_by_var_levels)
-    file_suffix <- paste0("pch_by_", pch_by_var, ".", file_suffix)
     
-    if (!is.null(my_pch)) pch_scale <- scale_shape_manual(values=my_pch)
-    pch_labs <- if (!is.null(pch_var_lab)) labs(shape=pch_var_lab) else labs(shape=pch_by_var)
-    pch_points <- geom_point(aes_string(shape=pch_by_var))
+    file_suffix <- "pdf"
+    
+    plot_color_by_var <- !is.null(color_by_var)
+    color_scale <- NULL; color_labs <- NULL; color_points <- NULL
+    if (plot_color_by_var) {
+      if (!is.numeric(topGenes[,color_by_var])) {
+        if (is.null(color_by_var_levels)) {
+          if (is.factor(topGenes[,color_by_var])) {
+            color_by_var_levels <- levels(topGenes[,color_by_var])
+          } else {
+            color_by_var_levels <- as.character(unique(na.omit(topGenes[,color_by_var])))
+            topGenes[,color_by_var] <- factor(topGenes[,color_by_var], levels=color_by_var_levels)
+          }
+        }
+        if (length(my_cols) < length(color_by_var_levels))
+          my_cols <- colorRampPalette(colors=my_cols)(length(color_by_var_levels))
+        color_scale <- scale_color_manual(values=my_cols, na.value=na_col)
+      } else {
+        color_scale <- scale_color_gradient(low=my_cols[1], high=my_cols[2], na.value=na_col)
+      }
+      file_suffix <- paste0("color_by_", color_by_var, ".", file_suffix)
+      color_labs <- if (!is.null(color_var_lab)) labs(color=color_var_lab) else labs(color=color_by_var)
+      color_points <- geom_point(aes_string(color=color_by_var, fill=color_by_var))
+    }
+    
+    plot_pch_by_var <- !is.null(pch_by_var)
+    pch_scale <- NULL; pch_labs <- NULL; pch_points <- NULL
+    if (plot_pch_by_var) {
+      if (is.null(pch_by_var_levels)) pch_by_var_levels <- as.character(unique(na.omit(topGenes[,pch_by_var])))
+      topGenes[,pch_by_var] <- factor(topGenes[,pch_by_var], levels=pch_by_var_levels)
+      file_suffix <- paste0("pch_by_", pch_by_var, ".", file_suffix)
+      
+      if (!is.null(my_pch)) pch_scale <- scale_shape_manual(values=my_pch)
+      pch_labs <- if (!is.null(pch_var_lab)) labs(shape=pch_var_lab) else labs(shape=pch_by_var)
+      pch_points <- geom_point(aes_string(shape=pch_by_var))
+    }
+    
+    if (plot_color_by_var & plot_pch_by_var) {
+      plot_points <- geom_point(aes_string(color=color_by_var, shape=pch_by_var), alpha=0.6, size=3)
+    } else if (plot_color_by_var & !plot_pch_by_var) {
+      plot_points <- geom_point(aes_string(color=color_by_var), alpha=0.6, size=3, shape=16)
+    } else if (!plot_color_by_var & plot_pch_by_var) {
+      plot_points <- geom_point(aes_string(shape=pch_by_var), alpha=0.6, size=3)
+    } else plot_points <- geom_point(alpha=0.6, size=3, shape=16)
+    
+    
+    # add "genes" column to topGenes, and order it for plotting
+    topGenes[,"genes"] <- rownames(topGenes)
+    topGenes <- miscHelpers::order_points(topGenes, method=point_order)
+    
+    # generate volcano plot
+    volcano <-
+      ggplot(data = topGenes,
+             aes(x=logFC, y=-log10(adj.P.Val))) +
+      # theme(legend.position = "none") +
+      color_scale + color_labs +
+      pch_scale + pch_labs +
+      plot_points +
+      xlab("log2 fold change") + ylab("-log10 Adj P") +
+      geom_vline(xintercept = fc_cut, linetype="dotted", size=1.0) +
+      geom_vline(xintercept = -fc_cut, linetype="dotted", size=1.0) +
+      geom_hline(yintercept = -log10(p_cut), linetype="dotted",size=1.0)
+    if (!is.null(x_lim)) {volcano <- volcano + xlim(x_lim)}
+    if (!is.null(y_lim)) {volcano <- volcano + ylim(y_lim)}
+    if (gene_labs) {
+      volcano <- volcano +
+        geom_text(
+          data=topGenes[((topGenes$logFC^2)/(x_cut^2) + (log10(topGenes$adj.P.Val)^2)/(y_cut^2)) > 1,],
+          aes(label=genes),
+          color="black", size=3, vjust=1, hjust=0.5)}
+    
+    # output volcano plot to file or plot window
+    if (!is.null(file_prefix)) {
+      pdf(file=paste(file_prefix, file_suffix, sep="."), w=plotdims[1], h=plotdims[2], ...)
+      on.exit(dev.off(), add=TRUE) # close plotting device on exit
+    } else quartz(plotdims[1],plotdims[2])
+    print(volcano)
   }
-  
-  if (plot_color_by_var & plot_pch_by_var) {
-    plot_points <- geom_point(aes_string(color=color_by_var, shape=pch_by_var), alpha=0.6, size=3)
-  } else if (plot_color_by_var & !plot_pch_by_var) {
-    plot_points <- geom_point(aes_string(color=color_by_var), alpha=0.6, size=3, shape=16)
-  } else if (!plot_color_by_var & plot_pch_by_var) {
-    plot_points <- geom_point(aes_string(shape=pch_by_var), alpha=0.6, size=3)
-  } else plot_points <- geom_point(alpha=0.6, size=3, shape=16)
-  
-  
-  # add "genes" column to topGenes, and order it for plotting
-  topGenes[,"genes"] <- rownames(topGenes)
-  topGenes <- miscHelpers::order_points(topGenes, method=point_order)
-  
-  # generate volcano plot
-  volcano <- ggplot(data = topGenes,
-                    aes(x=logFC, y=-log10(adj.P.Val))) +
-    # theme(legend.position = "none") +
-    color_scale + color_labs +
-    pch_scale + pch_labs +
-    plot_points +
-    xlab("log2 fold change") + ylab("-log10 Adj P") +
-    geom_vline(xintercept = fc_cut, linetype="dotted", size=1.0) +
-    geom_vline(xintercept = -fc_cut, linetype="dotted", size=1.0) +
-    geom_hline(yintercept = -log10(p_cut), linetype="dotted",size=1.0)
-  if (!is.null(x_lim)) {volcano <- volcano + xlim(x_lim)}
-  if (!is.null(y_lim)) {volcano <- volcano + ylim(y_lim)}
-  if (gene_labs) {
-    volcano <- volcano +
-      geom_text(data=topGenes[((topGenes$logFC^2)/(x_cut^2) + (log10(topGenes$adj.P.Val)^2)/(y_cut^2)) > 1,],
-                aes(label=genes),
-                color="black", size=3, vjust=1, hjust=0.5)}
-  
-  # output volcano plot to file or plot window
-  if (!is.null(file_prefix)) {
-    pdf(file=paste(file_prefix, file_suffix, sep="."), w=plotdims[1], h=plotdims[2], ...)
-  } else quartz(plotdims[1],plotdims[2])
-  print(volcano)
-  if (!is.null(file_prefix)) dev.off()
-}

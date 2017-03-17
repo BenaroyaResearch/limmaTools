@@ -14,26 +14,27 @@
 #' @param color_by_var_levels (optional) character vector or numeric value, providing control over coloring of sample labels. Use varies depending on class of \code{color_by_var}. If \code{color_by_var} is NOT numeric, should include the unique values of \code{color_by_var}; this vector is matched to \code{my_var_colors} to allow control of color labels. If not provided, elements are colored based on first appearance in the design object. If \code{color_by_var} is numeric, should be an integer providing the number of intervals to split \code{color_by_var} into (defaults to 10).
 #' @param norm.method name of the function to be used in normalizing the gene expression values in each row. Defaults to "range01", which normalizes each row to extend from 0 to 1. Can be any function that returns a numeric vector of the same length as its argument. Passed to \code{match.fun}. To use counts without normalization, use NULL or "identity".
 #' @param scale alternative method for normalizing counts. Passed to \code{heatmap.2}. Defaults to "none", to allow control via norm.method. Can be "row" or "column", specifying centering and scaling over rows or columns. Use in combination with \code{norm.method} may yield unexpected results.
-#' @param row_dendro,col_dendro boolean, whether to include the row and/or columns dendrogram(s)
+#' @param row_dendro,col_dendro logical, whether to include the row and/or columns dendrogram(s)
 #' @param filename a character string. If provided, the function outputs a pdf of the plot, named "{filename}.pdf". If not provided, the function prints to a plotting window.
 #' @param plotdims a numeric vector, the size (in inches) of the plotting object. Either the size of the pdf, or the size of the plotting window.
 #' @param my_heatmap_cols a vector of color names, typically the result of a call to \code{colorRampPalette}.
-#' @param add_legend boolean, whether to add a legend for the coloring of sample labels. Defaults to \code{FALSE}.
+#' @param add_legend logical, whether to add a legend for the coloring of sample labels. Defaults to \code{FALSE}.
 #' @param leg_x,leg_y x- and y-coordinates for the plot location of the legend for non-numeric variables. As the coordinates of heatmap.2 vary with the data set, the defaults may not provide a good location.
 #' @param xl,xr,yb,yt x- and y-coordinates for the left, right, bottom, and top boundaries of the legend for numeric variables. As the coordinates of heatmap.2 vary with the data set, the defaults may not provide a good location.
 #' @param key logical, whether to add a color key to the heatmap. Passed to \code{heatmap.2}. Defaults to \code{FALSE}.
 #' @param ... (optional) additional arguments passed to \code{heatmap.2}.
 #' @export
 #' @usage \code{
-#' plot_gene_heatmap(counts, design=NULL, libID_col="lib.id",
-#'                   order_by_var=NULL, order_by_var_levels=NULL,
-#'                   color_by_var=order_by_var, my_var_colors=NULL, color_by_var_levels=NULL,
-#'                   norm.method="range01", scale="none", row_dendro=TRUE, col_dendro=FALSE,
-#'                   filename=NULL, plotdims=c(9,9),
-#'                   my_heatmap_cols=colorRampPalette(rev(brewer.pal(9, "RdBu")))(100),
-#'                   add_legend=FALSE, leg_x=0.7, leg_y=1.1, xl=0.6, xr=0.7, yb=0.9, yt=1.1,
-#'                   key=FALSE,
-#'                   ...)}
+#' plot_gene_heatmap(
+#'      counts, design=NULL, libID_col="lib.id",
+#'      order_by_var=NULL, order_by_var_levels=NULL,
+#'      color_by_var=order_by_var, my_var_colors=NULL, color_by_var_levels=NULL,
+#'      norm.method="range01", scale="none", row_dendro=TRUE, col_dendro=FALSE,
+#'      filename=NULL, plotdims=c(9,9),
+#'      my_heatmap_cols=colorRampPalette(rev(brewer.pal(9, "RdBu")))(100),
+#'      add_legend=FALSE, leg_x=0.7, leg_y=1.1, xl=0.6, xr=0.7, yb=0.9, yt=1.1,
+#'      key=FALSE,
+#'      ...)}
 plot_gene_heatmap <-
   function(counts, design=NULL, libID_col="lib.id",
            order_by_var=NULL, order_by_var_levels=NULL,
@@ -45,14 +46,17 @@ plot_gene_heatmap <-
            key=FALSE,
            ...) {
     if (!is.null(order_by_var) & is.null(design)) stop("Cannot sort the libraries without annotation data.")
+    if (any(dim(counts)<2)) stop("Counts object must include at least two genes and two libraries.")
     
     # sort counts by specified variable, if applicable
     if (!is.null(order_by_var)) {
       if (!is.numeric(design[,order_by_var])) {
         if (is.null(order_by_var_levels))
-          order_by_var_levels <- as.character(unique(design[,order_by_var]))
-        design[,order_by_var] <- factor(design[,order_by_var], levels=order_by_var_levels) # set order
-        }
+          order_by_var_levels <-
+            as.character(unique(design[,order_by_var]))
+        design[,order_by_var] <-
+          factor(design[,order_by_var], levels=order_by_var_levels) # set order
+      }
       counts <- 
         counts[
           ,match(
@@ -66,7 +70,8 @@ plot_gene_heatmap <-
     
     if (is.null(norm.method))
       norm.method <- "identity"
-    counts <- t(apply(counts, MARGIN=1, FUN=match.fun(norm.method, descend=FALSE))) # normalize counts
+    counts <-
+      t(apply(counts, MARGIN=1, FUN=match.fun(norm.method, descend=FALSE))) # normalize counts
     
     if (!is.null(color_by_var)) {
       color_by_var <- design[,color_by_var]
@@ -81,13 +86,16 @@ plot_gene_heatmap <-
           my_var_colors <- colorRampPalette(brewer.pal(9, "YlGnBu"))(color_by_var_levels)
         }
         
-        if (length(my_var_colors) != color_by_var_levels) my_var_colors <- colorRampPalette(my_var_colors)(color_by_var_levels)
+        if (length(my_var_colors) != color_by_var_levels)
+          my_var_colors <- colorRampPalette(my_var_colors)(color_by_var_levels)
         
         plot_colors <-
-          my_var_colors[findInterval(color_by_var, 
-                                     vec=seq(min(color_by_var), max(color_by_var),
-                                             length.out=color_by_var_levels+1),
-                                     rightmost.closed=TRUE)]
+          my_var_colors[
+            findInterval(
+              color_by_var, 
+              vec=seq(min(color_by_var), max(color_by_var),
+                      length.out=color_by_var_levels+1),
+              rightmost.closed=TRUE)]
       } else {
         if (is.null(my_var_colors)) {
           require(RColorBrewer)
@@ -105,20 +113,23 @@ plot_gene_heatmap <-
     # open plotting device
     if (!is.null(filename)) {
       pdf(file=filename, w=plotdims[1], h=plotdims[2])
+      on.exit(dev.off()) # close plotting device on exit
     } else quartz(plotdims[1],plotdims[2])
     
     # generate heatmap
     if (exists("plot_colors")) {
-      gplots::heatmap.2(counts, scale=scale, col=my_heatmap_cols,
-                        Rowv=row_dendro, Colv=col_dendro,
-                        trace="none", key=key, margins=c(8,12),
-                        ColSideColors=plot_colors,
-                        ...)
+      gplots::heatmap.2(
+        counts, scale=scale, col=my_heatmap_cols,
+        Rowv=row_dendro, Colv=col_dendro,
+        trace="none", key=key, margins=c(8,12),
+        ColSideColors=plot_colors,
+        ...)
     } else
-      gplots::heatmap.2(counts, scale=scale, col=my_heatmap_cols,
-                        Rowv=row_dendro, Colv=col_dendro,
-                        trace="none", key=key, margins=c(8,12),
-                        ...)
+      gplots::heatmap.2(
+        counts, scale=scale, col=my_heatmap_cols,
+        Rowv=row_dendro, Colv=col_dendro,
+        trace="none", key=key, margins=c(8,12),
+        ...)
     
     if (add_legend)
       if (is.numeric(color_by_var)) {
@@ -132,19 +143,19 @@ plot_gene_heatmap <-
           return(y)
         }
         
-        plotrix::color.legend(legend=
-                                legend_color_labels(round(seq(min(color_by_var),
-                                                              max(color_by_var),
-                                                              length.out=color_by_var_levels+1),
-                                                          round(-log10(diff(range(color_by_var)))+2))),
-                              rect.col=my_var_colors,
-                              gradient="y",
-                              xl=0.6, xr=0.7, yb=0.9, yt=1.1,)
+        plotrix::color.legend(
+          legend=
+            legend_color_labels(
+              round(seq(min(color_by_var),
+                        max(color_by_var),
+                        length.out=color_by_var_levels+1),
+                    round(-log10(diff(range(color_by_var)))+2))),
+          rect.col=my_var_colors,
+          gradient="y",
+          xl=0.6, xr=0.7, yb=0.9, yt=1.1,)
       } else {
         legend(legend=names(my_var_colors), fill=my_var_colors,
                bty="n", x=leg_x, y=leg_y, xpd=TRUE)
       }
-    
-    if (!is.null(filename)) dev.off() # close plotting device (if needed)
     
   }

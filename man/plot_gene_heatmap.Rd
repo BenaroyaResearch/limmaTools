@@ -5,15 +5,16 @@
 \title{Plot a heatmap of gene expression counts}
 \usage{
 \code{
-plot_gene_heatmap(counts, design=NULL, libID_col="lib.id",
-                  order_by_var=NULL, order_by_var_levels=NULL,
-                  color_by_var=order_by_var, my_var_colors=NULL, color_by_var_levels=NULL,
-                  norm.method="range01", scale="none", row_dendro=TRUE, col_dendro=FALSE,
-                  filename=NULL, plotdims=c(9,9),
-                  my_heatmap_cols=colorRampPalette(rev(brewer.pal(9, "RdBu")))(100),
-                  add_legend=FALSE, leg_x=0.7, leg_y=1.1, xl=0.6, xr=0.7, yb=0.9, yt=1.1,
-                  key=FALSE,
-                  ...)}
+plot_gene_heatmap(
+     counts, design=NULL, libID_col="lib.id",
+     order_by_var=NULL, order_by_var_levels=NULL,
+     color_by_var=order_by_var, my_var_colors=NULL, color_by_var_levels=NULL,
+     norm.method="range01", scale="none", row_dendro=TRUE, col_dendro=FALSE,
+     filename=NULL, plotdims=c(9,9),
+     my_heatmap_cols=colorRampPalette(rev(brewer.pal(9, "RdBu")))(100),
+     add_legend=FALSE, leg_x=0.7, leg_y=1.1, xl=0.6, xr=0.7, yb=0.9, yt=1.1,
+     key=FALSE,
+     ...)}
 }
 \arguments{
 \item{counts}{a numeric matrix (or object that can be coerced to matrix) of gene expression values, with genes in rows and samples in columns.}
@@ -36,7 +37,7 @@ plot_gene_heatmap(counts, design=NULL, libID_col="lib.id",
 
 \item{scale}{alternative method for normalizing counts. Passed to \code{heatmap.2}. Defaults to "none", to allow control via norm.method. Can be "row" or "column", specifying centering and scaling over rows or columns. Use in combination with \code{norm.method} may yield unexpected results.}
 
-\item{row_dendro, col_dendro}{boolean, whether to include the row and/or columns dendrogram(s)}
+\item{row_dendro, col_dendro}{logical, whether to include the row and/or columns dendrogram(s)}
 
 \item{filename}{a character string. If provided, the function outputs a pdf of the plot, named "{filename}.pdf". If not provided, the function prints to a plotting window.}
 
@@ -44,7 +45,7 @@ plot_gene_heatmap(counts, design=NULL, libID_col="lib.id",
 
 \item{my_heatmap_cols}{a vector of color names, typically the result of a call to \code{colorRampPalette}.}
 
-\item{add_legend}{boolean, whether to add a legend for the coloring of sample labels. Defaults to \code{FALSE}.}
+\item{add_legend}{logical, whether to add a legend for the coloring of sample labels. Defaults to \code{FALSE}.}
 
 \item{leg_x, leg_y}{x- and y-coordinates for the plot location of the legend for non-numeric variables. As the coordinates of heatmap.2 vary with the data set, the defaults may not provide a good location.}
 

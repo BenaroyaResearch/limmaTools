@@ -18,56 +18,61 @@
 #' @details A separate plot is generated for each element of topGenes.pairwise. 
 #' @export
 #' @usage \code{
-#' plot_volcano_nvars(topGenes.pairwise, my_cols=c("darkcyan", "darkorange"),
-#'                    file_prefix=NULL, plotdims=c(9,9),
-#'                    fc_cut=log2(1.5), p_cut=0.01,
-#'                    x_lim="auto", y_lim="auto",
-#'                    gene_labs=FALSE, x_cut=0, y_cut=0,
-#'                    ...)}
-plot_volcano_nvars <- function(topGenes.pairwise, my_cols=c("darkcyan", "darkorange"),
-                               file_prefix=NULL, plotdims=c(9,9),
-                               fc_cut=log2(1.5), p_cut=0.01,
-                               x_lim="auto", y_lim="auto",
-                               gene_labs=FALSE, x_cut=0, y_cut=0,
-                               ...) {
-  if (identical(x_lim, "auto") | identical(y_lim, "auto")) {
-    xy_lims <- get_xy_lims(topGenes.pairwise, pairwise=TRUE, min_x_abs=fc_cut, min_y2=-log10(p_cut))
-    if (identical(x_lim, "auto")) x_lim <- xy_lims[["x"]]
-    if (identical(y_lim, "auto")) y_lim <- xy_lims[["y"]]
-  }
-  
-  for (i in names(topGenes.pairwise)) {
-    topGenes.tmp <- topGenes.pairwise[[i]]
-    colnames(topGenes.tmp) <- str_replace(colnames(topGenes.tmp), paste0(".", i), "") # strip out the de-ambiguation from the column names, if present
-    topGenes.tmp$genes <- rownames(topGenes.tmp)
-    if (is.null(topGenes.tmp$threshold)) topGenes.tmp$threshold <- (abs(topGenes.tmp$logFC) > fc_cut) & (topGenes.tmp$adj.P.Val < p_cut)
-    
-    volcano <- ggplot(data = topGenes.tmp,
-                      aes(x=logFC, y=-log10(adj.P.Val), colour=threshold)) +
-      geom_point(alpha=0.6, size=3) +
-      theme(legend.position = "none") +
-      xlab("log2 fold change") + ylab("-log10 Adj P") +
-      geom_vline(xintercept = fc_cut, linetype="dotted",size=1.0) +
-      geom_vline(xintercept = -fc_cut, linetype="dotted",size=1.0) +
-      geom_hline(yintercept = -log10(p_cut), linetype="dotted",size=1.0) + 
-      scale_colour_manual(values=my_cols)
-    if (!is.null(x_lim)) {volcano <- volcano + xlim(x_lim)}
-    if (!is.null(y_lim)) {volcano <- volcano + ylim(y_lim)}
-    if (gene_labs) {
-      volcano <- volcano +
-        geom_text(data=topGenes.tmp[((topGenes.tmp$logFC^2)/(x_cut^2) + (log10(topGenes.tmp$adj.P.Val)^2)/(y_cut^2)) > 1,],
-                  aes(label=genes),
-                  color="black", size=3, vjust=1, hjust=0.5)}
-    
-    if (!is.null(file_prefix)) {
-      pdf(file=paste(file_prefix, i, "pdf", sep="."), w=plotdims[1], h=plotdims[2], ...)
-    } else {
-      quartz(plotdims[1],plotdims[2])
-      volcano <- volcano + ggtitle(i)
+#' plot_volcano_nvars(
+#'      topGenes.pairwise, my_cols=c("darkcyan", "darkorange"),
+#'      file_prefix=NULL, plotdims=c(9,9),
+#'      fc_cut=log2(1.5), p_cut=0.01,
+#'      x_lim="auto", y_lim="auto",
+#'      gene_labs=FALSE, x_cut=0, y_cut=0,
+#'      ...)}
+plot_volcano_nvars <-
+  function(topGenes.pairwise, my_cols=c("darkcyan", "darkorange"),
+           file_prefix=NULL, plotdims=c(9,9),
+           fc_cut=log2(1.5), p_cut=0.01,
+           x_lim="auto", y_lim="auto",
+           gene_labs=FALSE, x_cut=0, y_cut=0,
+           ...) {
+    if (identical(x_lim, "auto") | identical(y_lim, "auto")) {
+      xy_lims <-
+        get_xy_lims(topGenes.pairwise, pairwise=TRUE, min_x_abs=fc_cut, min_y2=-log10(p_cut))
+      if (identical(x_lim, "auto")) x_lim <- xy_lims[["x"]]
+      if (identical(y_lim, "auto")) y_lim <- xy_lims[["y"]]
     }
     
-    print(volcano)
-    
-    if (!is.null(file_prefix)) dev.off()
+    for (i in names(topGenes.pairwise)) {
+      topGenes.tmp <- topGenes.pairwise[[i]]
+      colnames(topGenes.tmp) <- str_replace(colnames(topGenes.tmp), paste0(".", i), "") # strip out the de-ambiguation from the column names, if present
+      topGenes.tmp$genes <- rownames(topGenes.tmp)
+      if (is.null(topGenes.tmp$threshold))
+        topGenes.tmp$threshold <-
+        (abs(topGenes.tmp$logFC) > fc_cut) & (topGenes.tmp$adj.P.Val < p_cut)
+      
+      volcano <-
+        ggplot(data = topGenes.tmp,
+               aes(x=logFC, y=-log10(adj.P.Val), colour=threshold)) +
+        geom_point(alpha=0.6, size=3) +
+        theme(legend.position = "none") +
+        xlab("log2 fold change") + ylab("-log10 Adj P") +
+        geom_vline(xintercept = fc_cut, linetype="dotted",size=1.0) +
+        geom_vline(xintercept = -fc_cut, linetype="dotted",size=1.0) +
+        geom_hline(yintercept = -log10(p_cut), linetype="dotted",size=1.0) + 
+        scale_colour_manual(values=my_cols)
+      if (!is.null(x_lim)) {volcano <- volcano + xlim(x_lim)}
+      if (!is.null(y_lim)) {volcano <- volcano + ylim(y_lim)}
+      if (gene_labs) {
+        volcano <- volcano +
+          geom_text(data=topGenes.tmp[((topGenes.tmp$logFC^2)/(x_cut^2) + (log10(topGenes.tmp$adj.P.Val)^2)/(y_cut^2)) > 1,],
+                    aes(label=genes),
+                    color="black", size=3, vjust=1, hjust=0.5)}
+      
+      if (!is.null(file_prefix)) {
+        pdf(file=paste(file_prefix, i, "pdf", sep="."), w=plotdims[1], h=plotdims[2], ...)
+        on.exit(dev.off(), add=TRUE) # close plotting device on exit
+      } else {
+        quartz(plotdims[1],plotdims[2])
+        volcano <- volcano + ggtitle(i)
+      }
+      
+      print(volcano)
+    }
   }
-}

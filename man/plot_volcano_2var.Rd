@@ -5,12 +5,13 @@
 \title{Generate a volcano plot of genes from a differential expression (limma) analysis}
 \usage{
 \code{
-plot_volcano_2var(topGenes, my_cols=c("darkcyan", "darkorange"),
-                  file_prefix=NULL, plotdims=c(9,9),
-                  fc_cut=log2(1.5), p_cut=0.01,
-                  x_lim="auto", y_lim="auto",
-                  gene_labs=FALSE, x_cut=0, y_cut=0,
-                  ...)}
+plot_volcano_2var(
+     topGenes, my_cols=c("darkcyan", "darkorange"),
+     file_prefix=NULL, plotdims=c(9,9),
+     fc_cut=log2(1.5), p_cut=0.01,
+     x_lim="auto", y_lim="auto",
+     gene_labs=FALSE, x_cut=0, y_cut=0,
+     ...)}
 }
 \arguments{
 \item{topGenes}{a data frame, typically the output of a call to \code{topTable}. Must contain genes, log2 fold-change, and adjusted p-values. Can optionally include a "threshold" column, which should be boolean indicating genes passing significance thresholds.}
