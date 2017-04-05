@@ -44,7 +44,7 @@ plot_volcano_2var <-
     topGenes$genes <- rownames(topGenes)
     
     # if threshold not specified, calculate it
-    if (is.null(topGenes$threshold))
+    if (color_by_threshold & is.null(topGenes$threshold))
       topGenes$threshold <- (abs(topGenes$logFC) > fc_cut) & (topGenes$adj.P.Val < p_cut)
     
     # generate volcano plot
