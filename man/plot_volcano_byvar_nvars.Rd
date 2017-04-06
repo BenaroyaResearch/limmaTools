@@ -24,9 +24,9 @@ plot_volcano_byvar_nvars(
 
 \item{plotdims}{a numeric vector, the size (in inches) of the plotting object. Either the size of the pdf, or the size of the plotting window.}
 
-\item{fc_cut}{numeric, the (absolute value) log2 fold-change threshold for determining significance of genes. This value is also plotted as vertical dotted lines.}
+\item{fc_cut}{numeric, the (absolute value) log2 fold-change threshold for determining significance of genes. This value is also plotted as vertical dotted lines. Setting to NULL removes the lines.}
 
-\item{p_cut}{numeric, the p-value threshold for determining significance of genes. This value is also plotted as a horizontal dotted line.}
+\item{p_cut}{numeric, the p-value threshold for determining significance of genes. This value is also plotted as a horizontal dotted line. Setting to NULL removes the lines.}
 
 \item{color_by_var}{(optional) character string or integer identifying the column in topGenes to color points by. If not provided, points are plotted in black.}
 

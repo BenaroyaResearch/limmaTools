@@ -9,8 +9,8 @@
 #' @param topGenes.pairwise a list of data frames, each typically containing the output of a call to \code{topTable} for a single contrast. Each list element should be named with an identifier for the contrast, and must contain genes, log2 fold-change, and adjusted p-values. If plotting shapes or colors by a variable, each list element must contain a column matching that variable.
 #' @param file_prefix a character string. If provided, the function outputs pdfs of the plots, named "{file_prefix}.{list_element_name}.{colored_by_{color_by_var}.}{shape_by_{shape_by_var}.}pdf".
 #' @param plotdims a numeric vector, the size (in inches) of the plotting object. Either the size of the pdf, or the size of the plotting window.
-#' @param fc_cut numeric, the (absolute value) log2 fold-change threshold for determining significance of genes. This value is also plotted as vertical dotted lines.
-#' @param p_cut numeric, the p-value threshold for determining significance of genes. This value is also plotted as a horizontal dotted line.
+#' @param fc_cut numeric, the (absolute value) log2 fold-change threshold for determining significance of genes. This value is also plotted as vertical dotted lines. Setting to NULL removes the lines.
+#' @param p_cut numeric, the p-value threshold for determining significance of genes. This value is also plotted as a horizontal dotted line. Setting to NULL removes the lines.
 #' @param color_by_var (optional) character string or integer identifying the column in topGenes to color points by. If not provided, points are plotted in black.
 #' @param color_by_var_levels (optional) character vector defining the order of elements in the variable used for coloring points; this order is used for the plot legend and to match the order of colors (if provided). If not provided, levels are taken from the factor levels (if color_by_var is a factor), or else are ordered by order of appearance in \code{topGenes}.
 #' @param color_var_lab (optional) string to be used as the title for the color legends.
@@ -113,6 +113,7 @@ plot_volcano_byvar_nvars <-
       topGenes.tmp <-
         miscHelpers::order_points(topGenes.tmp, method=point_order)
       
+      # generate volcano plot
       volcano <- 
         ggplot(data = topGenes.tmp,
                aes(x=logFC, y=-log10(adj.P.Val))) +
@@ -120,10 +121,17 @@ plot_volcano_byvar_nvars <-
         color_scale + color_labs +
         pch_scale + pch_labs +
         plot_points +
-        xlab("log2 fold change") + ylab("-log10 Adj P") +
-        geom_vline(xintercept = fc_cut, linetype="dotted", size=1.0) +
-        geom_vline(xintercept = -fc_cut, linetype="dotted", size=1.0) +
-        geom_hline(yintercept = -log10(p_cut), linetype="dotted",size=1.0)
+        xlab("log2 fold change") + ylab("-log10 Adj P")
+      
+      if (!is.null(fc_cut)) {
+        volcano <- volcano +
+          geom_vline(xintercept = fc_cut, linetype="dotted", size=1.0) +
+          geom_vline(xintercept = -fc_cut, linetype="dotted", size=1.0)
+      }
+      if (!is.null(p_cut)) {
+        volcano <- volcano +
+          geom_hline(yintercept = -log10(p_cut), linetype="dotted",size=1.0)
+      }
       if (!is.null(x_lim)) {volcano <- volcano + xlim(x_lim)}
       if (!is.null(y_lim)) {volcano <- volcano + ylim(y_lim)}
       if (gene_labs) {

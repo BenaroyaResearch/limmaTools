@@ -8,7 +8,7 @@
 plot_volcano_nvars(
      topGenes.pairwise, my_cols=c("darkcyan", "darkorange"),
      file_prefix=NULL, plotdims=c(9,9),
-     fc_cut=log2(1.5), p_cut=0.01,
+     color_by_threshold=TRUE, fc_cut=log2(1.5), p_cut=0.01,
      x_lim="auto", y_lim="auto",
      gene_labs=FALSE, x_cut=0, y_cut=0,
      ...)}
@@ -22,9 +22,11 @@ plot_volcano_nvars(
 
 \item{plotdims}{a numeric vector, the size (in inches) of the plotting object. Either the size of the pdf, or the size of the plotting window.}
 
-\item{fc_cut}{numeric, the (absolute value) log2 fold-change threshold for determining significance of genes. This value is also plotted as vertical dotted lines.}
+\item{color_by_threshold}{logical, whether to color points based on exceeding a threshold for logFC and p-value. Used only if fc_cut and p_cut are not NULL.}
 
-\item{p_cut}{numeric, the p-value threshold for determining significance of genes. This value is also plotted as a horizontal dotted line.}
+\item{fc_cut}{numeric, the (absolute value) log2 fold-change threshold for determining significance of genes. This value is also plotted as vertical dotted lines. Setting to NULL removes the lines.}
+
+\item{p_cut}{numeric, the p-value threshold for determining significance of genes. This value is also plotted as a horizontal dotted line. Setting to NULL removes the lines.}
 
 \item{x_lim, y_lim}{either "auto", NULL, or numeric vectors. If "auto", x- and y-limits are determined from the data using \code{get_xy_lims}. If NULL, default plot limits are used. If provided as numeric vectors, the lower and upper limits of the plotting space along the x- and y-axes. Passed to \code{ggplot2::xlim}.}
 
