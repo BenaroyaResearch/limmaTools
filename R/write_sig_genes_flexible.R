@@ -20,7 +20,7 @@
 #'   method=c("ranked_list", "combined", "directional"),
 #'   adj_p_cut=0.01, fc_cut=log2(1.5), fc_adj_factor=1,
 #'   p_col="P.Value", adj_p_col="adj.P.Val", fc_col="logFC")}
-writeSigGenes <-
+write_sig_genes_flexible <-
   function(topGenes, file_prefix,
            method=c("ranked_list", "combined", "directional"),
            adj_p_cut=0.01, fc_cut=log2(1.5), fc_adj_factor=1,
