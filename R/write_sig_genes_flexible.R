@@ -1,7 +1,8 @@
-#' Output text files with lists of significant genes
+#' Use adaptive thresholds to export a set of significantly differentially expressed genes
 #'
-#' This function outputs text files with the results from a differential expression analysis. It provides
-#' options to output based on FDR and logFC thresholds, positive and negative logFC, and ranked lists.
+#' This function outputs lists of differentially expressed genes, according to a set of criteria. It uses the adjusted
+#' p-values and log-fold-changes, testing less stringent thresholds until a minimum number of genes are included.
+#' It is a wrapper for write_sig_genes.
 #' @param topGenes a data frame, typically the output of a call to \code{topTable}. Must contain genes, log2 fold-change, and adjusted p-values.
 #' @param file_prefix name of the destination for files. Details of each output will be appended to this prefix.
 #' @param method character, specifying the type of gene lists to output. "ranked_list" outputs a list of all genes in ranked order by p-value (from smallest to largest). "combined" outputs a list of all significant genes meeting the threshold. "directional" outputs lists of significant genes meeting the threshold that are up- and down-regulated. Partial matches are allowed.
@@ -11,14 +12,14 @@
 #' @param p_col name or number of the column in \code{topGenes} on which to sort. Generally the raw p-values, as adjusted p-values are often homogenized across a range of raw p-values. Defaults to "P.Value", which corresponds to the output from \code{topTable}. To include all genes, set to >1.
 #' @param adj_p_col name or number of the column in \code{topGenes} containing the p-values to compare to \code{p_cut}. Defaults to "adj.P.Val", which corresponds to the output from \code{topTable}.
 #' @param fc_col name or number of the column in \code{topGenes} containing the fold-change values to compare to \code{fc_cut}. Defaults to "logFC", which corresponds to the output from \code{topTable}.
-#' @export
+# #' @export
 #' @details This function writes out lists of genes to text files. By default, it outputs a list ranked by p-value, lists of genes significant based on FDR and logFC thresholds (all, up, and down).
 #' @usage \code{
-#' writeSigGenes(topGenes, file_prefix,
-#'               method=c("ranked_list", "combined", "directional"),
-#'               adj_p_cut=0.01, fc_cut=log2(1.5), fc_adj_factor=1,
-#'               p_col="P.Value", adj_p_col="adj.P.Val", fc_col="logFC"
-#'               )}
+#' write_sig_genes_flexible(
+#'   topGenes, file_prefix,
+#'   method=c("ranked_list", "combined", "directional"),
+#'   adj_p_cut=0.01, fc_cut=log2(1.5), fc_adj_factor=1,
+#'   p_col="P.Value", adj_p_col="adj.P.Val", fc_col="logFC")}
 writeSigGenes <-
   function(topGenes, file_prefix,
            method=c("ranked_list", "combined", "directional"),
