@@ -30,11 +30,6 @@ get_counts_sig_genes <-
       topGenes[(topGenes[,p_col] < p_cut) & (abs(topGenes[,fc_col]) > fc_cut), ]
     }
     
-    if (class(counts) %in% "EList") {
-      counts <- counts$E
-    } else if (class(counts) %in% "DGEList") {
-      counts <- counts$counts
-    }
-    }
+    counts <- extract_counts(counts)
     counts_sig_fc <- counts[rownames(counts) %in% rownames(v_sig_fc),,drop=FALSE]
   }

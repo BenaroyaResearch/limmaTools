@@ -9,7 +9,8 @@ Imports:
 	limma,
     ggplot2,
     stringr,
-    ordinal
+    ordinal,
+    countSubsetNorm
 Depends:
     R (>= 3.2.2)
 License: GPL-3
