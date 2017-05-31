@@ -4,7 +4,7 @@
 #' automated. Samples can be order and/or colored based on variables in an optional \code{design} object.
 #' It also provides a nicer default color palette than the heatmap.2 default.
 #' 
-#' @param counts a numeric matrix (or object that can be coerced to matrix) of gene expression values, with genes in rows and samples in columns.
+#' @param counts a numeric matrix (or object that can be coerced to matrix) of gene expression values, with genes in rows and samples in columns, or an object from which counts can be extracted (such as an EList or DGEList).
 #' @param design (optional) design object, used for ordering or coloring samples. If provided, must include a column (named in \code{libID_col}) with identifiers matching column names in \code{counts}, and columns matching \code{color_by_var} and/or \code{order_by_var}.
 #' @param libID_col (optional) string, the name of the column in \code{design} containing sample identifiers matching the column names of \code{counts}.
 #' @param order_by_var (optional) string, the name of the column in \code{design} by which to order the samples.
@@ -46,6 +46,9 @@ plot_gene_heatmap <-
            key=FALSE,
            ...) {
     if (!is.null(order_by_var) & is.null(design)) stop("Cannot sort the libraries without annotation data.")
+    
+    counts <- extract_counts(counts)
+    
     if (any(dim(counts)<2)) stop("Counts object must include at least two genes and two libraries.")
     
     # sort counts by specified variable, if applicable
