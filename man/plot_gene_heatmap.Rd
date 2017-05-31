@@ -17,7 +17,7 @@ plot_gene_heatmap(
      ...)}
 }
 \arguments{
-\item{counts}{a numeric matrix (or object that can be coerced to matrix) of gene expression values, with genes in rows and samples in columns.}
+\item{counts}{a numeric matrix (or object that can be coerced to matrix) of gene expression values, with genes in rows and samples in columns, or an object from which counts can be extracted (such as an EList or DGEList).}
 
 \item{design}{(optional) design object, used for ordering or coloring samples. If provided, must include a column (named in \code{libID_col}) with identifiers matching column names in \code{counts}, and columns matching \code{color_by_var} and/or \code{order_by_var}.}
 
