@@ -10,7 +10,8 @@ plot_volcano_2var(
      file_prefix=NULL, plotdims=c(9,9),
      color_by_threshold=TRUE, fc_cut=log2(1.5), p_cut=0.01,
      x_lim="auto", y_lim="auto",
-     gene_labs=FALSE, x_cut=0, y_cut=0,
+     gene_labs=NULL, x_cut=0, y_cut=0, x_cut_direction="both",
+     gene_labs_repel=TRUE, gene_lab_size=3,
      ...)}
 }
 \arguments{
@@ -30,9 +31,15 @@ plot_volcano_2var(
 
 \item{x_lim, y_lim}{either "auto", NULL, or numeric vectors. If "auto", x- and y-limits are determined from the data using \code{get_xy_lims}. If NULL, default plot limits are used. If provided as numeric vectors, the lower and upper limits of the plotting space along the x- and y-axes. Passed to \code{ggplot2::xlim}.}
 
-\item{gene_labs}{logical, whether to include gene labels for genes with extreme logFC and p-value. If \code{TRUE}, genes with values outside the labeling ellipse will be labeled.}
+\item{gene_labs}{character, the type of gene labeling to include. If \code{"threshold"}. If \code{"ellipse"}, genes with values outside the labeling ellipse will be labeled. Default value is NULL, which yields no gene labeling.}
 
 \item{x_cut, y_cut}{numeric, the radii of the labeling ellipse along the x- and y-axes. Genes with values outside the ellipse are labeled with gene names. Default to 0, which results in all genes being labeled.}
+
+\item{x_cut_direction}{character. For threshold-based gene labeling only, specifies the direction of the threshold for gene labeling. Default to "both", which labels genes with absolute value logFC greater than x_cut. "lower" labels genes with logFC less than x_cut; "upper" labels genes with logFC greater than x_cut.}
+
+\item{gene_labs_repel}{logical, whether to force separation of the gene label text. If TRUE, labels are plotted using \code{geom_text_repel}.}
+
+\item{gene_lab_size}{numeric, the size of the gene label text. Passed to \code{geom_text} to \code{geom_text_repel}.}
 
 \item{...}{additional parameters passed to \code{pdf}.}
 }
