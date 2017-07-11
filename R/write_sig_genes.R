@@ -11,6 +11,7 @@
 #' @param p_col name or number of the column in \code{topGenes} on which to sort. Generally the raw p-values, as adjusted p-values are often homogenized across a range of raw p-values. Defaults to "P.Value", which corresponds to the output from \code{topTable}. To include all genes, set to >1.
 #' @param adj_p_col name or number of the column in \code{topGenes} containing the p-values to compare to \code{p_cut}. Defaults to "adj.P.Val", which corresponds to the output from \code{topTable}.
 #' @param fc_col name or number of the column in \code{topGenes} containing the fold-change values to compare to \code{fc_cut}. Defaults to "logFC", which corresponds to the output from \code{topTable}.
+#' #' @param threshold_col name or number of the column in \code{topGenes} containing the logical values indicating which genes meet thresholds. This is an alternate way to determine signficance of genes. If specified, \code{p_cut} and \code{fc_cut} are ignored.
 #' @export
 #' @details This function writes out lists of genes to text files. By default, it outputs a list ranked by p-value, lists of genes significant based on FDR and logFC thresholds (all, up, and down).
 #' @usage \code{
@@ -18,12 +19,14 @@
 #'   topGenes, file_prefix,
 #'   method=c("ranked_list", "combined", "directional"),
 #'   adj_p_cut=0.01, fc_cut=log2(1.5), fc_adj_factor=1,
-#'   p_col="P.Value", adj_p_col="adj.P.Val", fc_col="logFC")}
+#'   p_col="P.Value", adj_p_col="adj.P.Val", fc_col="logFC",
+#'   threshold_col=NULL)}
 write_sig_genes <-
   function(topGenes, file_prefix,
            method=c("ranked_list", "combined", "directional"),
            adj_p_cut=0.01, fc_cut=log2(1.5), fc_adj_factor=1,
-           p_col="P.Value", adj_p_col="adj.P.Val", fc_col="logFC") {
+           p_col="P.Value", adj_p_col="adj.P.Val", fc_col="logFC",
+           threshold_col=NULL) {
     if (!is.data.frame(topGenes)) stop("topGenes must be a data frame object")
     
     method <- match.arg(method, c("ranked_list", "combined", "directional"), several.ok=TRUE)
@@ -37,7 +40,9 @@ write_sig_genes <-
     }
     
     if (any(c("combined", "directional") %in% method)) {
-      if ((fc_cut > 0) & (adj_p_cut <= 1)) {
+      if (!is.null(topGenes[,threshold_col])) {
+        threshold_text <- "_threshold"
+      } else if ((fc_cut > 0) & (adj_p_cut <= 1)) {
         threshold_text <- paste0("_FC", round(2^(fc_cut*fc_adj_factor), 3), "_and_P", adj_p_cut)
       } else if (fc_cut > 0) {
         threshold_text <- paste0("_FC", round(2^(fc_cut*fc_adj_factor), 3))
@@ -49,25 +54,48 @@ write_sig_genes <-
     }
     
     if ("combined" %in% method) { # output combined list of significant genes
-      genes.combined <- rownames(topGenes)[
-        (topGenes[,adj_p_col] < adj_p_cut) & (abs(topGenes[,fc_col]) > fc_cut)] 
-      write.table(genes.combined,
+      if (!is.null(topGenes[,threshold_col])) {
+        genes.combined <-
+          rownames(topGenes)[topGenes[,threshold_col]]
+      } else {
+        genes.combined <-
+          rownames(topGenes)[
+            (topGenes[,adj_p_col] < adj_p_cut) & (abs(topGenes[,fc_col]) > fc_cut)] 
+      }
+      write.table(
+        genes.combined,
         file=paste0(file_prefix, ".genes", threshold_text, ".txt"),
         quote = FALSE, col.names=FALSE, row.names=FALSE)
     }
     
     if ("directional" %in% method) { # output directional lists of significant genes
-      genes.up <- rownames(topGenes)[
-        (topGenes[,adj_p_col] < adj_p_cut) & (abs(topGenes[,fc_col]) > fc_cut) &
-          (topGenes[,fc_col] > 0)]
-      genes.down <- rownames(topGenes)[
-        (topGenes[,adj_p_col] < adj_p_cut) & (abs(topGenes[,fc_col]) > fc_cut) &
-          (topGenes[,fc_col] < 0)]
-      write.table(genes.up,
-                  file=paste0(file_prefix, ".genes", threshold_text, ".up.txt"),
-                  quote = FALSE, col.names=FALSE, row.names=FALSE)
-      write.table(genes.down,
-                  file=paste0(file_prefix, ".genes", threshold_text, ".down.txt"),
-                  quote = FALSE, col.names=FALSE, row.names=FALSE)
+      if (!is.null(topGenes[,threshold_col])) {
+        genes.up <-
+          rownames(topGenes)[
+            topGenes[,threshold_col] &
+              topGenes[,fc_col] > 0]
+        genes.down <-
+          rownames(topGenes)[
+            topGenes[,threshold_col] &
+              topGenes[,fc_col] < 0]
+      } else {
+        genes.up <-
+          rownames(topGenes)[
+            (topGenes[,adj_p_col] < adj_p_cut) &
+              (abs(topGenes[,fc_col]) > fc_cut) &
+              (topGenes[,fc_col] > 0)]
+        genes.down <- rownames(topGenes)[
+          (topGenes[,adj_p_col] < adj_p_cut) &
+            (abs(topGenes[,fc_col]) > fc_cut) &
+            (topGenes[,fc_col] < 0)]
+      }
+      write.table(
+        genes.up,
+        file=paste0(file_prefix, ".genes", threshold_text, ".up.txt"),
+        quote = FALSE, col.names=FALSE, row.names=FALSE)
+      write.table(
+        genes.down,
+        file=paste0(file_prefix, ".genes", threshold_text, ".down.txt"),
+        quote = FALSE, col.names=FALSE, row.names=FALSE)
     }
   }

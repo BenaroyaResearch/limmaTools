@@ -10,7 +10,7 @@
 #' @param fc_cut numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). Ignored if \code{threshold_col} is specified.
 #' @param p_col name or number of the column in \code{topGenes} containing the p-values to compare to \code{p_cut}. Defaults to "adj.P.Val", which corresponds to the output from \code{topTable}.
 #' @param fc_col name or number of the column in \code{topGenes} containing the fold-change values to compare to \code{fc_cut}. Defaults to "logFC", which corresponds to the output from \code{topTable}.
-#' @param threshold_col name or number of the column in \code{topGenes} containing the logical values indicating which genes meet thresholds. This is an alternate way to determine signficance of genes. If specified, \code{p_cut} and \code{fc_cut} are ignore.
+#' @param threshold_col name or number of the column in \code{topGenes} containing the logical values indicating which genes meet thresholds. This is an alternate way to determine signficance of genes. If specified, \code{p_cut} and \code{fc_cut} are ignored.
 #' @import countSubsetNorm
 #' @export
 #' @return A matrix or data frame (matching the class of \code{counts}), with only rows with log-FC and adjusted p-values meeting specified thresholds.

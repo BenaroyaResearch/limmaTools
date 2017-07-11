@@ -43,4 +43,3 @@ This function determines appropriate x and y limits for volcano plots or sets of
 \details{
 This function finds reasonable x- and y-limits for plots; it is specifically designed for use with volcano plots.
 }
-

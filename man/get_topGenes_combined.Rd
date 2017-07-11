@@ -25,4 +25,3 @@ A data frame, with adjusted p-values and logical \code{threshold} values for all
 This function takes a set of pairwise limma model contrasts, and combines the results into a single
 object.
 }
-

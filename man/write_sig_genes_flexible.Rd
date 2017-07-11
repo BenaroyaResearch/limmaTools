@@ -38,4 +38,3 @@ It is a wrapper for write_sig_genes.
 \details{
 This function writes out lists of genes to text files. By default, it outputs a list ranked by p-value, lists of genes significant based on FDR and logFC thresholds (all, up, and down).
 }
-

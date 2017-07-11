@@ -49,4 +49,3 @@ output to a plotting window, or to a pdf. The points can be colored based on fol
 thresholds. Points can also be labeled with gene names, and the points to be labeled can be set based
 on an ellipse oriented to the x- and y-axes.
 }
-

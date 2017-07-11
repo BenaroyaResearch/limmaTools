@@ -60,4 +60,3 @@ This is a wrapper for \code{heatmap.2}, designed to make plotting of gene expres
 automated. Samples can be order and/or colored based on variables in an optional \code{design} object.
 It also provides a nicer default color palette than the heatmap.2 default.
 }
-

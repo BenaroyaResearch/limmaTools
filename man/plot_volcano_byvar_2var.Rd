@@ -64,4 +64,3 @@ Points can also have shape determined by gene-level variables on a discrete scal
 labeled with gene names, and the points to be labeled can be set based on an ellipse oriented to the
 x- and y-axes.
 }
-

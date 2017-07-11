@@ -9,7 +9,8 @@ write_sig_genes(
   topGenes, file_prefix,
   method=c("ranked_list", "combined", "directional"),
   adj_p_cut=0.01, fc_cut=log2(1.5), fc_adj_factor=1,
-  p_col="P.Value", adj_p_col="adj.P.Val", fc_col="logFC")}
+  p_col="P.Value", adj_p_col="adj.P.Val", fc_col="logFC",
+  threshold_col=NULL)}
 }
 \arguments{
 \item{topGenes}{a data frame, typically the output of a call to \code{topTable}. Must contain genes, log2 fold-change, and adjusted p-values.}
@@ -28,7 +29,8 @@ write_sig_genes(
 
 \item{adj_p_col}{name or number of the column in \code{topGenes} containing the p-values to compare to \code{p_cut}. Defaults to "adj.P.Val", which corresponds to the output from \code{topTable}.}
 
-\item{fc_col}{name or number of the column in \code{topGenes} containing the fold-change values to compare to \code{fc_cut}. Defaults to "logFC", which corresponds to the output from \code{topTable}.}
+\item{fc_col}{name or number of the column in \code{topGenes} containing the fold-change values to compare to \code{fc_cut}. Defaults to "logFC", which corresponds to the output from \code{topTable}.
+#' @param threshold_col name or number of the column in \code{topGenes} containing the logical values indicating which genes meet thresholds. This is an alternate way to determine signficance of genes. If specified, \code{p_cut} and \code{fc_cut} are ignored.}
 }
 \description{
 This function outputs text files with the results from a differential expression analysis. It provides
@@ -37,4 +39,3 @@ options to output based on FDR and logFC thresholds, positive and negative logFC
 \details{
 This function writes out lists of genes to text files. By default, it outputs a list ranked by p-value, lists of genes significant based on FDR and logFC thresholds (all, up, and down).
 }
-

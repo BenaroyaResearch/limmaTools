@@ -45,4 +45,3 @@ to be labeled can be set based on an ellipse oriented to the x- and y-axes.
 \details{
 A separate plot is generated for each element of topGenes.pairwise.
 }
-
