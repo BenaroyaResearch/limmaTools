@@ -25,12 +25,14 @@ get_counts_sig_genes <-
            p_cut=0.01, fc_cut=log2(1.5),
            p_col="adj.P.Val", fc_col="logFC",
            threshold_col=NULL) {
-    v_sig_fc <- if (!is.null(threshold_col)) {
-      topGenes[topGenes[,threshold_col],]
+    if (!is.null(threshold_col)) {
+      threshold <- topGenes[,threshold_col]
     } else {
-      topGenes[(topGenes[,p_col] < p_cut) & (abs(topGenes[,fc_col]) > fc_cut), ]
+      threshold <- (topGenes[,p_col] < p_cut) & (abs(topGenes[,fc_col]) > fc_cut)
     }
+    genes_sig <- rownames(topGenes[threshold,])
     
     counts <- extract_counts(counts)
-    counts_sig_fc <- counts[rownames(counts) %in% rownames(v_sig_fc),,drop=FALSE]
+    counts_sig_fc <- counts[rownames(counts) %in% genes_sig,,drop=FALSE]
+    counts_sig_fc
   }
