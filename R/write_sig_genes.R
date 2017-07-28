@@ -11,7 +11,7 @@
 #' @param p_col name or number of the column in \code{topGenes} on which to sort. Generally the raw p-values, as adjusted p-values are often homogenized across a range of raw p-values. Defaults to "P.Value", which corresponds to the output from \code{topTable}. To include all genes, set to >1.
 #' @param adj_p_col name or number of the column in \code{topGenes} containing the p-values to compare to \code{p_cut}. Defaults to "adj.P.Val", which corresponds to the output from \code{topTable}.
 #' @param fc_col name or number of the column in \code{topGenes} containing the fold-change values to compare to \code{fc_cut}. Defaults to "logFC", which corresponds to the output from \code{topTable}.
-#' #' @param threshold_col name or number of the column in \code{topGenes} containing the logical values indicating which genes meet thresholds. This is an alternate way to determine signficance of genes. If specified, \code{p_cut} and \code{fc_cut} are ignored.
+#' @param threshold_col name or number of the column in \code{topGenes} containing the logical values indicating which genes meet thresholds. This is an alternate way to determine signficance of genes. If specified, \code{p_cut} and \code{fc_cut} are ignored.
 #' @export
 #' @details This function writes out lists of genes to text files. By default, it outputs a list ranked by p-value, lists of genes significant based on FDR and logFC thresholds (all, up, and down).
 #' @usage \code{
@@ -40,7 +40,7 @@ write_sig_genes <-
     }
     
     if (any(c("combined", "directional") %in% method)) {
-      if (!is.null(topGenes[,threshold_col])) {
+      if (!is.null(threshold_col)) {
         threshold_text <- "_threshold"
       } else if ((fc_cut > 0) & (adj_p_cut <= 1)) {
         threshold_text <- paste0("_FC", round(2^(fc_cut*fc_adj_factor), 3), "_and_P", adj_p_cut)
@@ -54,7 +54,7 @@ write_sig_genes <-
     }
     
     if ("combined" %in% method) { # output combined list of significant genes
-      if (!is.null(topGenes[,threshold_col])) {
+      if (!is.null(threshold_col)) {
         genes.combined <-
           rownames(topGenes)[topGenes[,threshold_col]]
       } else {
@@ -69,7 +69,7 @@ write_sig_genes <-
     }
     
     if ("directional" %in% method) { # output directional lists of significant genes
-      if (!is.null(topGenes[,threshold_col])) {
+      if (!is.null(threshold_col)) {
         genes.up <-
           rownames(topGenes)[
             topGenes[,threshold_col] &
