@@ -1,8 +1,8 @@
 #' Plot a heatmap of gene expression counts
 #'
-#' This is a wrapper for \code{heatmap.2}, designed to make plotting of gene expression heatmaps more
+#' This is a wrapper for \code{heatmap3}, designed to make plotting of gene expression heatmaps more
 #' automated. Samples can be order and/or colored based on variables in an optional \code{design} object.
-#' It also provides a nicer default color palette than the heatmap.2 default.
+#' It also provides a nicer default color palette than the heatmap3 default.
 #' 
 #' @param counts a numeric matrix (or object that can be coerced to matrix) of gene expression values, with genes in rows and samples in columns, or an object from which counts can be extracted (such as an EList or DGEList).
 #' @param design (optional) design object, used for ordering or coloring samples. If provided, must include a column (named in \code{libID_col}) with identifiers matching column names in \code{counts}, and columns matching \code{color_by_var} and/or \code{order_by_var}.
@@ -13,37 +13,34 @@
 #' @param my_var_colors (optional) vector of colors for use in coloring column identifiers. Use varies depending on class of \code{color_by_var}. If \code{color_by_var} is numeric, values of \code{color_by_var} are broken up into even intervals with number specified by \code{color_by_var_levels}, and assigned colors from \code{my_var_colors}; if needed, additional colors are imputed using \code{colorRampPalette}. If not provided, the "YlGnBu" palette from \code{RColorBrewer} is used. If \code{color_by_var} is not numeric, \code{my_var_colors} should include at least as many colors as there are unique values in \code{color_by_var}; these colors are assigned to the values for plotting. If not provided, "Set1" from \code{RColorBrewer} is used.
 #' @param color_by_var_levels (optional) character vector or numeric value, providing control over coloring of sample labels. Use varies depending on class of \code{color_by_var}. If \code{color_by_var} is NOT numeric, should include the unique values of \code{color_by_var}; this vector is matched to \code{my_var_colors} to allow control of color labels. If not provided, elements are colored based on first appearance in the design object. If \code{color_by_var} is numeric, should be an integer providing the number of intervals to split \code{color_by_var} into (defaults to 10).
 #' @param norm.method name of the function to be used in normalizing the gene expression values in each row. Defaults to "range01", which normalizes each row to extend from 0 to 1. Can be any function that returns a numeric vector of the same length as its argument. Passed to \code{match.fun}. To use counts without normalization, use NULL or "identity".
-#' @param scale alternative method for normalizing counts. Passed to \code{heatmap.2}. Defaults to "none", to allow control via norm.method. Can be "row" or "column", specifying centering and scaling over rows or columns. Use in combination with \code{norm.method} may yield unexpected results.
-#' @param row_dendro,col_dendro logical, whether to include the row and/or columns dendrogram(s)
+#' @param scale alternative method for normalizing counts. Passed to \code{heatmap3}. Defaults to "none", to allow control via norm.method. Can be "row" or "column", specifying centering and scaling over rows or columns. Use in combination with \code{norm.method} may yield unexpected results.
+#' @param row_dendro,col_dendro variables that specify the row and/or columns dendrogram(s). Set to NA to suppress dendrograms. if \code{order_by_var} is specified, \code{col_dendro} is ignored.
 #' @param filename a character string. If provided, the function outputs a pdf of the plot, named "{filename}.pdf". If not provided, the function prints to a plotting window.
 #' @param plotdims a numeric vector, the size (in inches) of the plotting object. Either the size of the pdf, or the size of the plotting window.
 #' @param my_heatmap_cols a vector of color names, typically the result of a call to \code{colorRampPalette}.
 #' @param add_legend logical, whether to add a legend for the coloring of sample labels. Defaults to \code{FALSE}.
-#' @param leg_x,leg_y x- and y-coordinates for the plot location of the legend for non-numeric variables. As the coordinates of heatmap.2 vary with the data set, the defaults may not provide a good location.
-#' @param xl,xr,yb,yt x- and y-coordinates for the left, right, bottom, and top boundaries of the legend for numeric variables. As the coordinates of heatmap.2 vary with the data set, the defaults may not provide a good location.
-#' @param key logical, whether to add a color key to the heatmap. Passed to \code{heatmap.2}. Defaults to \code{FALSE}.
-#' @param ... (optional) additional arguments passed to \code{heatmap.2}.
+#' @param leg_x,leg_y x- and y-coordinates for the plot location of the legend for non-numeric variables. As the coordinates of heatmap3 vary with the data set, the defaults may not provide a good location.
+#' @param xl,xr,yb,yt x- and y-coordinates for the left, right, bottom, and top boundaries of the legend for numeric variables. As the coordinates of heatmap3 vary with the data set, the defaults may not provide a good location.
+#' @param ... (optional) additional arguments passed to \code{heatmap3}.
 #' @export
 #' @usage \code{
 #' plot_gene_heatmap(
 #'      counts, design=NULL, libID_col="lib.id",
 #'      order_by_var=NULL, order_by_var_levels=NULL,
 #'      color_by_var=order_by_var, my_var_colors=NULL, color_by_var_levels=NULL,
-#'      norm.method="range01", scale="none", row_dendro=TRUE, col_dendro=FALSE,
+#'      norm.method="range01", scale="none", row_dendro=NULL, col_dendro=NULL,
 #'      filename=NULL, plotdims=c(9,9),
 #'      my_heatmap_cols=colorRampPalette(rev(brewer.pal(9, "RdBu")))(100),
 #'      add_legend=FALSE, leg_x=0.7, leg_y=1.1, xl=0.6, xr=0.7, yb=0.9, yt=1.1,
-#'      key=FALSE,
 #'      ...)}
 plot_gene_heatmap <-
   function(counts, design=NULL, libID_col="lib.id",
            order_by_var=NULL, order_by_var_levels=NULL,
            color_by_var=order_by_var, my_var_colors=NULL, color_by_var_levels=NULL,
-           norm.method="range01", scale="none", row_dendro=TRUE, col_dendro=FALSE,
+           norm.method="range01", scale="none", row_dendro=NULL, col_dendro=NULL,
            filename=NULL, plotdims=c(9,9),
            my_heatmap_cols=colorRampPalette(rev(brewer.pal(9, "RdBu")))(100),
            add_legend=FALSE, leg_x=0.7, leg_y=1.1, xl=0.6, xr=0.7, yb=0.9, yt=1.1,
-           key=FALSE,
            ...) {
     if (!is.null(order_by_var) & is.null(design)) stop("Cannot sort the libraries without annotation data.")
     
@@ -65,6 +62,7 @@ plot_gene_heatmap <-
           ,match(
             design[order(design[, order_by_var]), libID_col],
             colnames(counts))] # put columns in new order
+      col_dendro <- NA
     }
     
     # now mirror the updated order of counts in design
@@ -121,17 +119,17 @@ plot_gene_heatmap <-
     
     # generate heatmap
     if (exists("plot_colors")) {
-      gplots::heatmap.2(
+      heatmap3::heatmap3(
         counts, scale=scale, col=my_heatmap_cols,
         Rowv=row_dendro, Colv=col_dendro,
-        trace="none", key=key, margins=c(8,12),
+        legendfun=legendfun, margins=c(8,12),
         ColSideColors=plot_colors,
         ...)
     } else
-      gplots::heatmap.2(
+      heatmap3::heatmap3(
         counts, scale=scale, col=my_heatmap_cols,
         Rowv=row_dendro, Colv=col_dendro,
-        trace="none", key=key, margins=c(8,12),
+        legendfun=legendfun, margins=c(8,12),
         ...)
     
     if (add_legend)
