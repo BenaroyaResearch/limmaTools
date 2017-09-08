@@ -122,14 +122,14 @@ plot_gene_heatmap <-
       heatmap3::heatmap3(
         counts, scale=scale, col=my_heatmap_cols,
         Rowv=row_dendro, Colv=col_dendro,
-        legendfun=legendfun, margins=c(8,12),
+        margins=c(8,12),
         ColSideColors=plot_colors,
         ...)
     } else
       heatmap3::heatmap3(
         counts, scale=scale, col=my_heatmap_cols,
         Rowv=row_dendro, Colv=col_dendro,
-        legendfun=legendfun, margins=c(8,12),
+        margins=c(8,12),
         ...)
     
     if (add_legend)
