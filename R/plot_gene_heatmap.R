@@ -8,10 +8,10 @@
 #' @param design (optional) design object, used for ordering or coloring samples. If provided, must include a column (named in \code{libID_col}) with identifiers matching column names in \code{counts}, and columns matching \code{color_by_var} and/or \code{order_by_var}.
 #' @param libID_col (optional) string, the name of the column in \code{design} containing sample identifiers matching the column names of \code{counts}.
 #' @param order_by_var (optional) string, the name of the column in \code{design} by which to order the samples.
-#' @param order_by_var_levels (optional) character vector, with the levels of \code{order_by_var} in the order to use for plotting. If not provided, elements are ordered based on first appearance in the design object. Ignored if \code{order_by_var} is numeric.
+#' @param order_by_var_levels (optional) character vector, with the levels of \code{order_by_var} in the order to use for plotting. If not provided, elements are ordered by factor levels (if a factor) or based on first appearance in the design object. Ignored if \code{order_by_var} is numeric.
 #' @param color_by_var (optional) string, the name of the column in \code{design} by which to color the sample labels. If \code{order_by_var} is specified and \code{color_by_var} is not, sample labels will be colored by \code{order_by_var}.
 #' @param my_var_colors (optional) vector of colors for use in coloring column identifiers. Use varies depending on class of \code{color_by_var}. If \code{color_by_var} is numeric, values of \code{color_by_var} are broken up into even intervals with number specified by \code{color_by_var_levels}, and assigned colors from \code{my_var_colors}; if needed, additional colors are imputed using \code{colorRampPalette}. If not provided, the "YlGnBu" palette from \code{RColorBrewer} is used. If \code{color_by_var} is not numeric, \code{my_var_colors} should include at least as many colors as there are unique values in \code{color_by_var}; these colors are assigned to the values for plotting. If not provided, "Set1" from \code{RColorBrewer} is used.
-#' @param color_by_var_levels (optional) character vector or numeric value, providing control over coloring of sample labels. Use varies depending on class of \code{color_by_var}. If \code{color_by_var} is NOT numeric, should include the unique values of \code{color_by_var}; this vector is matched to \code{my_var_colors} to allow control of color labels. If not provided, elements are colored based on first appearance in the design object. If \code{color_by_var} is numeric, should be an integer providing the number of intervals to split \code{color_by_var} into (defaults to 10).
+#' @param color_by_var_levels (optional) character vector or numeric value, providing control over coloring of sample labels. Use varies depending on class of \code{color_by_var}. If \code{color_by_var} is NOT numeric, should include the unique values of \code{color_by_var}; this vector is matched to \code{my_var_colors} to allow control of color labels. If not provided, elements are matched to colors in order by factor levels (if a factor) or based on first appearance in the design object. If \code{color_by_var} is numeric, should be an integer providing the number of intervals to split \code{color_by_var} into (defaults to 10).
 #' @param norm.method name of the function to be used in normalizing the gene expression values in each row. Defaults to "range01", which normalizes each row to extend from 0 to 1. Can be any function that returns a numeric vector of the same length as its argument. Passed to \code{match.fun}. To use counts without normalization, use NULL or "identity".
 #' @param scale alternative method for normalizing counts. Passed to \code{heatmap3}. Defaults to "none", to allow control via norm.method. Can be "row" or "column", specifying centering and scaling over rows or columns. Use in combination with \code{norm.method} may yield unexpected results.
 #' @param row_dendro,col_dendro variables that specify the row and/or columns dendrogram(s). Set to NA to suppress dendrograms. if \code{order_by_var} is specified, \code{col_dendro} is ignored.
@@ -51,9 +51,15 @@ plot_gene_heatmap <-
     # sort counts by specified variable, if applicable
     if (!is.null(order_by_var)) {
       if (!is.numeric(design[,order_by_var])) {
-        if (is.null(order_by_var_levels))
-          order_by_var_levels <-
-            as.character(unique(design[,order_by_var]))
+        if (is.null(order_by_var_levels)) {
+          if (is.factor(design[,order_by_var])) {
+            order_by_var_levels <-
+              levels(design[,order_by_var])
+          } else {
+            order_by_var_levels <-
+              as.character(unique(design[,order_by_var]))
+          }
+        }
         design[,order_by_var] <-
           factor(design[,order_by_var], levels=order_by_var_levels) # set order
       }
@@ -102,12 +108,18 @@ plot_gene_heatmap <-
           require(RColorBrewer)
           my_var_colors <- brewer.pal(length(unique(color_by_var)), "Set1")
         }
-        if (is.null(color_by_var_levels)) color_by_var_levels <- as.character(unique(color_by_var))
-        color_by_var <- factor(color_by_var, levels=color_by_var_levels)
-        
-        my_var_colors <- my_var_colors[1:length(color_by_var_levels)]
-        names(my_var_colors) <- color_by_var_levels
-        plot_colors <- my_var_colors[color_by_var]
+        if (is.null(color_by_var_levels)) {
+          if (is.factor(color_by_var)) {
+            color_by_var_levels <- levels(color_by_var)
+          } else {
+            color_by_var_levels <- as.character(unique(color_by_var))
+          }
+          color_by_var <- factor(color_by_var, levels=color_by_var_levels)
+          
+          my_var_colors <- my_var_colors[1:length(color_by_var_levels)]
+          names(my_var_colors) <- color_by_var_levels
+          plot_colors <- my_var_colors[color_by_var]
+        }
       }
     }
     
@@ -158,5 +170,4 @@ plot_gene_heatmap <-
         legend(legend=names(my_var_colors), fill=my_var_colors,
                bty="n", x=leg_x, y=leg_y, xpd=TRUE)
       }
-    
-  }
+    }
