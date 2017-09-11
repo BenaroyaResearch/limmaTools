@@ -115,11 +115,11 @@ plot_gene_heatmap <-
             color_by_var_levels <- as.character(unique(color_by_var))
           }
           color_by_var <- factor(color_by_var, levels=color_by_var_levels)
-          
-          my_var_colors <- my_var_colors[1:length(color_by_var_levels)]
-          names(my_var_colors) <- color_by_var_levels
-          plot_colors <- my_var_colors[color_by_var]
         }
+        
+        my_var_colors <- my_var_colors[1:length(color_by_var_levels)]
+        names(my_var_colors) <- color_by_var_levels
+        plot_colors <- my_var_colors[color_by_var]
       }
     }
     
