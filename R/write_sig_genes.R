@@ -73,7 +73,7 @@ write_sig_genes <-
         }
         
         # output directional lists of significant genes
-        if ("directional" %in% method) {
+        if (method.tmp == "directional") {
           write.table(
             genes_to_output[["up"]],
             file=paste0(file_prefix, ".genes", threshold_text, ".up.txt"),
