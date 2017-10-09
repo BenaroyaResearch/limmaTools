@@ -18,7 +18,7 @@ get_counts_sig_genes(
 
 \item{p_cut}{numeric, the cutoff for adjusted p-value. Genes with adjusted p-values greater than or equal to this value are not included in the result. Defaults to 0.01. Ignored if \code{threshold_col} is specified.}
 
-\item{fc_cut}{numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). Ignored if \code{threshold_col} is specified.}
+\item{fc_cut}{numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). Ignored if \code{threshold_col} is specified. Set to 0 to include all genes, or NULL to ignore logFC completely (e.g. for multi-group comparisons).}
 
 \item{p_col}{name or number of the column in \code{topGenes} containing the p-values to compare to \code{p_cut}. Defaults to "adj.P.Val", which corresponds to the output from \code{topTable}.}
 

@@ -7,7 +7,7 @@
 #' @param counts a matrix or data frame containing the gene expression data, or an object from which counts can be exrracted (such as an EList or DGEList). Should have samples in columns and genes in rows. Rownames must contain gene names corresponding to gene names in \code{topGenes}.
 #' @param topGenes a data frame, typically the output of a call to \code{topTable}. Must contain genes, log2 fold-change, and adjusted p-values.
 #' @param p_cut numeric, the cutoff for adjusted p-value. Genes with adjusted p-values greater than or equal to this value are not included in the result. Defaults to 0.01. Ignored if \code{threshold_col} is specified.
-#' @param fc_cut numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). Ignored if \code{threshold_col} is specified.
+#' @param fc_cut numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). Ignored if \code{threshold_col} is specified. Set to 0 to include all genes, or NULL to ignore logFC completely (e.g. for multi-group comparisons).
 #' @param p_col name or number of the column in \code{topGenes} containing the p-values to compare to \code{p_cut}. Defaults to "adj.P.Val", which corresponds to the output from \code{topTable}.
 #' @param fc_col name or number of the column in \code{topGenes} containing the fold-change values to compare to \code{fc_cut}. Defaults to "logFC", which corresponds to the output from \code{topTable}.
 #' @param threshold_col name or number of the column in \code{topGenes} containing the logical values indicating which genes meet thresholds. This is an alternate way to determine signficance of genes. If specified, \code{p_cut} and \code{fc_cut} are ignored.
@@ -28,7 +28,11 @@ get_counts_sig_genes <-
     if (!is.null(threshold_col)) {
       threshold <- topGenes[,threshold_col]
     } else {
-      threshold <- (topGenes[,p_col] < p_cut) & (abs(topGenes[,fc_col]) > fc_cut)
+      if (is.null(fc_cut)) {
+        threshold <- (topGenes[,p_col] < p_cut)
+      } else {
+        threshold <- (topGenes[,p_col] < p_cut) & (abs(topGenes[,fc_col]) > fc_cut)
+      }
     }
     genes_sig <- rownames(topGenes[threshold,])
     
