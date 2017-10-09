@@ -38,11 +38,12 @@ get_sig_genes <-
     } else if (method == "combined") { # return combined list of significant genes
       if (!is.null(threshold_col)) {
         genes.combined <-
-          rownames(topGenes)[topGenes[,threshold_col]]
+          rownames(topGenes)[
+            topGenes[,threshold_col]]
       } else if (is.null(fc_cut)) {
         genes.combined <-
           rownames(topGenes)[
-            adj_p_col < adj_p_cut]
+            topGenes[,adj_p_col] < adj_p_cut]
       } else {
         genes.combined <-
           rownames(topGenes)[
