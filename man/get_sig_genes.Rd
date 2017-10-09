@@ -19,7 +19,7 @@ get_sig_genes(
 
 \item{adj_p_cut}{numeric, the cutoff for adjusted p-value. Genes with adjusted p-values greater than or equal to this value are not included in the result. Defaults to 0.01.}
 
-\item{fc_cut}{numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). To include all genes, set to 0.}
+\item{fc_cut}{numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). To include all genes, set to 0. To ignore logFC, set to NULL.}
 
 \item{p_col}{name or number of the column in \code{topGenes} on which to sort. Generally the raw p-values, as adjusted p-values are often homogenized across a range of raw p-values. Defaults to "P.Value", which corresponds to the output from \code{topTable}. To include all genes, set to >1.}
 

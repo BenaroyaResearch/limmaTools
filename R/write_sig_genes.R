@@ -6,7 +6,7 @@
 #' @param file_prefix name of the destination for files. Details of each output will be appended to this prefix.
 #' @param method character, specifying the type of gene lists to output. "ranked_list" outputs a list of all genes in ranked order by p-value (from smallest to largest). "combined" outputs a list of all significant genes meeting the threshold. "directional" outputs lists of significant genes meeting the threshold that are up- and down-regulated. Partial matches are allowed.
 #' @param adj_p_cut numeric, the cutoff for adjusted p-value. Genes with adjusted p-values greater than or equal to this value are not included in the result. Defaults to 0.01.
-#' @param fc_cut numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). To include all genes, set to 0.
+#' @param fc_cut numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). To include all genes, set to 0. To ignore logFC, set to NULL.
 #' @param fc_adj_factor numeric, the adjustment factor used for log2-fold-change values with a numeric predictor. This is included so that the output file names can include the fold change prior to scaling. Defaults to 1, which is the appropriate value for categorical comparisons.
 #' @param p_col name or number of the column in \code{topGenes} on which to sort. Generally the raw p-values, as adjusted p-values are often homogenized across a range of raw p-values. Defaults to "P.Value", which corresponds to the output from \code{topTable}. To include all genes, set to >1.
 #' @param adj_p_col name or number of the column in \code{topGenes} containing the p-values to compare to \code{p_cut}. Defaults to "adj.P.Val", which corresponds to the output from \code{topTable}.
@@ -54,12 +54,12 @@ write_sig_genes <-
         # update filename
         if (!is.null(threshold_col)) { 
           threshold_text <- "_threshold"
+        } else if ((is.null(fc_cut) | fc_cut <= 0) & (adj_p_cut <= 1)) {
+          threshold_text <- paste0("_P", adj_p_cut)
         } else if ((fc_cut > 0) & (adj_p_cut <= 1)) {
           threshold_text <- paste0("_FC", round(2^(fc_cut*fc_adj_factor), 3), "_and_P", adj_p_cut)
         } else if (fc_cut > 0) {
           threshold_text <- paste0("_FC", round(2^(fc_cut*fc_adj_factor), 3))
-        } else if (adj_p_cut <= 1) { 
-          threshold_text <- paste0("_P", adj_p_cut)
         } else {
           threshold_text <- ""
         }

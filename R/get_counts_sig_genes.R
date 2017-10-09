@@ -27,12 +27,10 @@ get_counts_sig_genes <-
            threshold_col=NULL) {
     if (!is.null(threshold_col)) {
       threshold <- topGenes[,threshold_col]
+    } else if (is.null(fc_cut)) {
+      threshold <- (topGenes[,p_col] < p_cut)
     } else {
-      if (is.null(fc_cut)) {
-        threshold <- (topGenes[,p_col] < p_cut)
-      } else {
-        threshold <- (topGenes[,p_col] < p_cut) & (abs(topGenes[,fc_col]) > fc_cut)
-      }
+      threshold <- (topGenes[,p_col] < p_cut) & (abs(topGenes[,fc_col]) > fc_cut)
     }
     genes_sig <- rownames(topGenes[threshold,])
     

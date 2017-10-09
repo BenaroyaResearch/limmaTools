@@ -22,7 +22,7 @@ write_sig_genes(
 
 \item{adj_p_cut}{numeric, the cutoff for adjusted p-value. Genes with adjusted p-values greater than or equal to this value are not included in the result. Defaults to 0.01.}
 
-\item{fc_cut}{numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). To include all genes, set to 0.}
+\item{fc_cut}{numeric, the absolute value cutoff for log2 fold change. Genes with absolute value log2-FC less than or equal to this value are not included in the result. Defaults to log2(1.5). To include all genes, set to 0. To ignore logFC, set to NULL.}
 
 \item{fc_adj_factor}{numeric, the adjustment factor used for log2-fold-change values with a numeric predictor. This is included so that the output file names can include the fold change prior to scaling. Defaults to 1, which is the appropriate value for categorical comparisons.}
 
