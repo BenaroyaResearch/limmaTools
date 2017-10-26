@@ -23,15 +23,16 @@
 #'             neg_log10_ycol=TRUE,
 #'             min_x_abs=NULL,
 #'             min_y2=NULL)}
-get_xy_lims <- function(topGenes,
-                        pairwise=FALSE,
-                        x_symmetric=TRUE,
-                        adjust_factor=0.01,
-                        y_floor_zero=TRUE,
-                        x_col="logFC", y_col="adj.P.Val",
-                        neg_log10_ycol=TRUE,
-                        min_x_abs=NULL,
-                        min_y2=NULL) {
+get_xy_lims <-
+  function(topGenes,
+           pairwise=FALSE,
+           x_symmetric=TRUE,
+           adjust_factor=0.01,
+           y_floor_zero=TRUE,
+           x_col="logFC", y_col="adj.P.Val",
+           neg_log10_ycol=TRUE,
+           min_x_abs=NULL,
+           min_y2=NULL) {
   if (pairwise) {
     x_lims <- range(unlist(lapply(topGenes, function(x) x[,grep(x_col, colnames(x), value=TRUE)])))
     y_lims <- range(unlist(lapply(topGenes, function(x) x[,grep(y_col, colnames(x), value=TRUE)])))
@@ -41,7 +42,8 @@ get_xy_lims <- function(topGenes,
   }
   
   if (neg_log10_ycol) y_lims <- rev(-log10(y_lims))
-  if (!is.null(min_y2) & (y_lims[2] < min_y2)) y_lims[2] <- min_y2
+  if (!is.null(min_y2))
+    if (y_lims[2] < min_y2) y_lims[2] <- min_y2
   
   if (!is.null(min_x_abs)) {
     if (x_lims[1] > -min_x_abs) x_lims[1] <- min_x_abs
