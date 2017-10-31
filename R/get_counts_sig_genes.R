@@ -35,6 +35,6 @@ get_counts_sig_genes <-
     genes_sig <- rownames(topGenes[threshold,])
     
     counts <- extract_counts(counts)
-    counts_sig_fc <- counts[match(genes_sig, rownames(counts)),,drop=FALSE]
+    counts_sig_fc <- counts[na.omit(match(genes_sig, rownames(counts))),,drop=FALSE]
     counts_sig_fc
   }
