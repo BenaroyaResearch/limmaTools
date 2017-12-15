@@ -71,7 +71,8 @@ plot_volcano_byvar_2var <-
         }
         if (length(my_cols) < length(color_by_var_levels))
           my_cols <- colorRampPalette(colors=my_cols)(length(color_by_var_levels))
-        color_scale <- scale_color_manual(values=my_cols, na.value=na_col)
+        color_scale <-
+          scale_color_manual(values=setNames(my_cols, color_by_var_levels), na.value=na_col)
       } else {
         color_scale <- scale_color_gradient(low=my_cols[1], high=my_cols[2], na.value=na_col)
       }
@@ -80,16 +81,19 @@ plot_volcano_byvar_2var <-
       color_points <- geom_point(aes_string(color=color_by_var, fill=color_by_var))
     }
     
-    plot_pch_by_var <- !is.null(pch_by_var)
+    plot_pch_by_var <- !is.null(pch_by_var) & !is.null(my_pch)
     pch_scale <- NULL; pch_labs <- NULL; pch_points <- NULL
     if (plot_pch_by_var) {
-      if (is.null(pch_by_var_levels)) pch_by_var_levels <- as.character(unique(na.omit(topGenes[,pch_by_var])))
-      topGenes[,pch_by_var] <- factor(topGenes[,pch_by_var], levels=pch_by_var_levels)
-      file_suffix <- paste0("pch_by_", pch_by_var, ".", file_suffix)
-      
-      if (!is.null(my_pch)) pch_scale <- scale_shape_manual(values=my_pch)
-      pch_labs <- if (!is.null(pch_var_lab)) labs(shape=pch_var_lab) else labs(shape=pch_by_var)
-      pch_points <- geom_point(aes_string(shape=pch_by_var))
+      if (is.null(pch_by_var_levels))
+        if (is.factor(topGenes[,pch_by_var])) {
+          pch_by_var_levels <- levels(topGenes[,pch_by_var])
+        } else pch_by_var_levels <- as.character(unique(na.omit(topGenes[,pch_by_var])))
+        topGenes[,pch_by_var] <- factor(topGenes[,pch_by_var], levels=pch_by_var_levels)
+        file_suffix <- paste0("pch_by_", pch_by_var, ".", file_suffix)
+        
+        pch_scale <- scale_shape_manual(values=setNames(my_pch, pch_by_var_levels))
+        pch_labs <- if (!is.null(pch_var_lab)) labs(shape=pch_var_lab) else labs(shape=pch_by_var)
+        pch_points <- geom_point(aes_string(shape=pch_by_var))
     }
     
     if (plot_color_by_var & plot_pch_by_var) {
