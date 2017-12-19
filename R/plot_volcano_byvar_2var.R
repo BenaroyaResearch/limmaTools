@@ -72,7 +72,8 @@ plot_volcano_byvar_2var <-
         if (length(my_cols) < length(color_by_var_levels))
           my_cols <- colorRampPalette(colors=my_cols)(length(color_by_var_levels))
         color_scale <-
-          scale_color_manual(values=setNames(my_cols, color_by_var_levels), na.value=na_col)
+          scale_color_manual(
+            values=my_cols, breaks=color_by_var_levels, labels=color_by_var_levels, na.value=na_col)
       } else {
         color_scale <- scale_color_gradient(low=my_cols[1], high=my_cols[2], na.value=na_col)
       }
