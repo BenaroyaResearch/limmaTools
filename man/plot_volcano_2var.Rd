@@ -33,7 +33,7 @@ plot_volcano_2var(
 
 \item{gene_labs}{character, the type of gene labeling to include. If \code{"threshold"}. If \code{"ellipse"}, genes with values outside the labeling ellipse will be labeled. Default value is NULL, which yields no gene labeling.}
 
-\item{x_cut, y_cut}{numeric, the radii of the labeling ellipse along the x- and y-axes. Genes with values outside the ellipse are labeled with gene names. Default to 0, which results in all genes being labeled.}
+\item{x_cut, y_cut}{numeric. Interpretation depends on the value of \code{gene_labs}. If \code{gene_labs == "threshold"}, these values set the thresholds for logFC and adjusted p-value for labeling the genes; genes will be labeled if \code{-log10 adjusted p-value > y_cut} and \code{logFC} falls on the side of x_cut specified by \code{x_cut_direction} (see below). If \code{gene_labs == "threshold"}, the \code{x_cut} and \code{y_cut} specify the radii of the labeling ellipse along the x- and y-axes; genes with values outside the ellipse are labeled with gene names. Both values default to 0, which results in all genes being labeled.}
 
 \item{x_cut_direction}{character. For threshold-based gene labeling only, specifies the direction of the threshold for gene labeling. Default to "both", which labels genes with absolute value logFC greater than x_cut. "lower" labels genes with logFC less than x_cut; "upper" labels genes with logFC greater than x_cut.}
 
