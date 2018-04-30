@@ -76,9 +76,10 @@ plot_volcano_byvar_nvars <-
               color_by_var_levels <- levels(topGenes.tmp[[color_by_var]])
             } else {
               color_by_var_levels <- unique(na.omit(topGenes.tmp[[color_by_var]]))
-              topGenes.tmp[[color_by_var]] <- factor(topGenes.tmp[[color_by_var]], levels=color_by_var_levels)
             }
           }
+          topGenes.tmp[[color_by_var]] <- factor(topGenes.tmp[[color_by_var]], levels=color_by_var_levels)
+          
           if (length(my_cols) < length(color_by_var_levels))
             my_cols <- colorRampPalette(colors=my_cols)(length(color_by_var_levels))
           color_scale <- scale_color_manual(values=my_cols, na.value=na_col)
