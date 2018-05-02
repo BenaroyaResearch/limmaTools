@@ -7,8 +7,8 @@
 \code{
 plot_gene_heatmap(
      counts, design=NULL, libID_col="lib.id",
-     order_by_vars=NULL, order_by_vars_levels=NULL,
-     color_by_vars=order_by_vars, my_vars_colors=NULL, color_by_vars_levels=NULL,
+     order_by_var=NULL, order_by_var_levels=NULL,
+     color_by_var=order_by_var, my_var_colors=NULL, color_by_var_levels=NULL,
      norm.method="range01", scale="none", row_dendro=NULL, col_dendro=NULL,
      filename=NULL, plotdims=c(9,9),
      my_heatmap_cols=colorRampPalette(rev(brewer.pal(9, "RdBu")))(100),
@@ -22,33 +22,33 @@ plot_gene_heatmap(
 
 \item{libID_col}{(optional) string, the name of the column in \code{design} containing sample identifiers matching the column names of \code{counts}.}
 
-\item{order_by_vars}{(optional) character vector, the names of the columns in \code{design} by which to order the samples. If multiple columns are provided, ordering is done by the first variable, then the second, etc. by passing the columns as argument to \code{dplyr::arrange}}
+\item{order_by_var}{(optional) character vector, the names of the columns in \code{design} by which to order the samples. If multiple columns are provided, ordering is done by the first variable, then the second, etc. by passing the columns as argument to \code{dplyr::arrange}}
 
-\item{order_by_vars_levels}{(optional) list of character vectors, one for each element in \code{order_by_vars}, with the levels of \code{order_by_vars} in the order to use for plotting. If not provided, elements are ordered by factor levels (if a factor) or based on first appearance in the design object. Ignored if \code{order_by_vars} is numeric.}
+\item{order_by_var_levels}{(optional) character vector, or list of character vectors, one for each element in \code{order_by_var}, with the levels of \code{order_by_var} in the order to use for plotting. If not provided, elements are ordered by factor levels (if a factor) or based on first appearance in the design object. Ignored if \code{order_by_var} is numeric.}
 
-\item{color_by_vars}{(optional) character vector, the names of the columns in \code{design} by which to color the sample labels. If \code{order_by_vars} is specified and \code{color_by_vars} is not, sample labels will be colored by \code{order_by_vars}.}
+\item{color_by_var}{(optional) character vector, the names of the columns in \code{design} by which to color the sample labels. If \code{order_by_var} is specified and \code{color_by_var} is not, sample labels will be colored by \code{order_by_var}.}
 
-\item{my_vars_colors}{(optional) list of vectors of colors for use in coloring column identifiers, one for each element in \code{color_by_vars}. Use varies depending on class of \code{color_by_vars}. For each variable specified by \code{color_by_vars}: if the variable is numeric, values of are broken up into even intervals with number specified by \code{color_byvars_levels}, and assigned colors from the corresponding vector of colors in \code{my_vars_colors}; if needed, additional colors are imputed using \code{colorRampPalette}. If not provided, the "YlGnBu" palette from \code{RColorBrewer} is used. If the variable is not numeric, \code{my_vars_colors} should include at least as many colors as there are unique values for the variable; these colors are assigned to the values for plotting. If not provided, "Set1" from \code{RColorBrewer} is used.}
+\item{my_var_colors}{(optional) vector, or list of vectors, containing colors for use in coloring column identifiers, one for each element in \code{color_by_var}. Use varies depending on class of \code{color_by_var}. For each variable specified by \code{color_by_var}: if the variable is numeric, values of are broken up into even intervals with number specified by \code{color_byvars_levels}, and assigned colors from the corresponding vector of colors in \code{my_var_colors}; if needed, additional colors are imputed using \code{colorRampPalette}. If not provided, the "YlGnBu" palette from \code{RColorBrewer} is used. If the variable is not numeric, \code{my_var_colors} should include at least as many colors as there are unique values for the variable; these colors are assigned to the values for plotting. If not provided, "Set1" from \code{RColorBrewer} is used.}
 
-\item{color_by_vars_levels}{(optional) list of vectors, one for each element in \code{color_by_vars}, providing control over coloring of sample labels. Use varies depending on the class of the variable. If the variable is NOT numeric, should include the unique values of \code{color_by_vars}; this vector is matched to \code{my_vars_colors} to allow control of color labels. If an empty list is provided, elements are matched to colors in order by factor levels (if a factor) or based on first appearance in the design object. If the variable is numeric, should be an integer providing the number of intervals to split the variable into (defaults to 10).}
+\item{color_by_var_levels}{(optional) vector, or list of vectors, one for each element in \code{color_by_var}, providing control over coloring of sample labels. Use varies depending on the class of the variable. If the variable is NOT numeric, should include the unique values of \code{color_by_var}; this vector is matched to \code{my_var_colors} to allow control of color labels. If an empty list is provided, elements are matched to colors in order by factor levels (if a factor) or based on first appearance in the design object. If the variable is numeric, should be an integer providing the number of intervals to split the variable into (defaults to 10).}
 
 \item{norm.method}{name of the function to be used in normalizing the gene expression values in each row. Defaults to "range01", which normalizes each row to extend from 0 to 1. Can be any function that returns a numeric vector of the same length as its argument. Passed to \code{match.fun}. To use counts without normalization, use NULL or "identity".}
 
 \item{scale}{alternative method for normalizing counts. Passed to \code{heatmap3}. Defaults to "none", to allow control via norm.method. Can be "row" or "column", specifying centering and scaling over rows or columns. Use in combination with \code{norm.method} may yield unexpected results.}
 
-\item{row_dendro, col_dendro}{variables that specify the row and/or columns dendrogram(s). Set to NA to suppress dendrograms. if \code{order_by_vars} is specified, \code{col_dendro} is ignored.}
+\item{row_dendro, col_dendro}{variables that specify the row and/or columns dendrogram(s). Set to NA to suppress dendrograms. if \code{order_by_var} is specified, \code{col_dendro} is ignored.}
 
 \item{filename}{a character string. If provided, the function outputs a pdf of the plot, named "{filename}.pdf". If not provided, the function prints to a plotting window.}
 
-\item{plotdims}{a numeric vector, the size (in inches) of the plotting object. Either the size of the pdf, or the size of the plotting window.}
+\item{plotdims}{a numeric vector, the width and height (in inches) of the plotting object. Either the size of the pdf, or the size of the plotting window.}
 
 \item{my_heatmap_cols}{a vector of color names, typically the result of a call to \code{colorRampPalette}.}
 
-\item{add_legend}{logical, whether to add a legend for the coloring of sample labels. Defaults to \code{FALSE}.}
+\item{add_legend}{logical, whether to add a legend for the coloring of sample labels. If samples are colored by more than one variable, legends are output as separate plots. Defaults to \code{FALSE}.}
 
-\item{leg_x, leg_y}{x- and y-coordinates for the plot location of the legend for non-numeric variables. As the coordinates of heatmap3 vary with the data set, the defaults may not provide a good location.}
+\item{leg_x, leg_y}{x- and y-coordinates for the plot location of the legend for non-numeric variables. As the coordinates of heatmap3 vary with the data set, the defaults may not provide a good location. Used only if color_by_var has length 1.}
 
-\item{xl, xr, yb, yt}{x- and y-coordinates for the left, right, bottom, and top boundaries of the legend for numeric variables. As the coordinates of heatmap3 vary with the data set, the defaults may not provide a good location.}
+\item{xl, xr, yb, yt}{x- and y-coordinates for the left, right, bottom, and top boundaries of the legend for numeric variables. As the coordinates of heatmap3 vary with the data set, the defaults may not provide a good location. Used only if color_by_var has length 1.}
 
 \item{...}{(optional) additional arguments passed to \code{heatmap3}.}
 }
