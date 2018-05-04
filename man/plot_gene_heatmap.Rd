@@ -11,14 +11,14 @@ plot_gene_heatmap(
      color_by_var=order_by_var, my_var_colors=NULL, color_by_var_levels=NULL,
      norm.method="range01", scale="none", row_dendro=NULL, col_dendro=NULL,
      filename=NULL, plotdims=c(9,9),
-     my_heatmap_cols=colorRampPalette(rev(brewer.pal(9, "RdBu")))(100),
+     my_heatmap_cols=NULL,
      add_legend=FALSE, leg_x=0.7, leg_y=1.1, xl=0.6, xr=0.7, yb=0.9, yt=1.1,
      ...)}
 }
 \arguments{
 \item{counts}{a numeric matrix (or object that can be coerced to matrix) of gene expression values, with genes in rows and samples in columns, or an object from which counts can be extracted (such as an EList or DGEList).}
 
-\item{design}{(optional) design object, used for ordering or coloring samples. If provided, must include a column (named in \code{libID_col}) with identifiers matching column names in \code{counts}, and columns matching \code{color_by_var} and/or \code{order_by_var}.}
+\item{design}{(optional) design object, used for ordering or coloring samples. If provided, must include a column (named in \code{libID_col}) with identifiers matching column names in \code{counts}, and columns matching \code{color_by_var} and/or \code{order_by_var}. Only samples found in both \code{counts} and \code{design} will be plotted.}
 
 \item{libID_col}{(optional) string, the name of the column in \code{design} containing sample identifiers matching the column names of \code{counts}.}
 
@@ -28,7 +28,7 @@ plot_gene_heatmap(
 
 \item{color_by_var}{(optional) character vector, the names of the columns in \code{design} by which to color the sample labels. If \code{order_by_var} is specified and \code{color_by_var} is not, sample labels will be colored by \code{order_by_var}.}
 
-\item{my_var_colors}{(optional) vector, or list of vectors, containing colors for use in coloring column identifiers, one for each element in \code{color_by_var}. Use varies depending on class of \code{color_by_var}. For each variable specified by \code{color_by_var}: if the variable is numeric, values of are broken up into even intervals with number specified by \code{color_byvars_levels}, and assigned colors from the corresponding vector of colors in \code{my_var_colors}; if needed, additional colors are imputed using \code{colorRampPalette}. If not provided, the "YlGnBu" palette from \code{RColorBrewer} is used. If the variable is not numeric, \code{my_var_colors} should include at least as many colors as there are unique values for the variable; these colors are assigned to the values for plotting. If not provided, "Set1" from \code{RColorBrewer} is used.}
+\item{my_var_colors}{(optional) vector, or list of vectors, containing colors for use in coloring column identifiers, one for each element in \code{color_by_var}. Use varies depending on class of \code{color_by_var}. For each variable specified by \code{color_by_var}: if the variable is numeric, values of are broken up into even intervals with number specified by \code{color_byvars_levels}, and assigned colors from the corresponding vector of colors in \code{my_var_colors}; if needed, additional colors are imputed using \code{colorRampPalette}. If not provided, the "viridis" palette from \code{viridis} is used. If the variable is not numeric, \code{my_var_colors} should include at least as many colors as there are unique values for the variable; these colors are assigned to the values for plotting. If not provided, "Set1" from \code{RColorBrewer} is used.}
 
 \item{color_by_var_levels}{(optional) vector, or list of vectors, one for each element in \code{color_by_var}, providing control over coloring of sample labels. Use varies depending on the class of the variable. If the variable is NOT numeric, should include the unique values of \code{color_by_var}; this vector is matched to \code{my_var_colors} to allow control of color labels. If an empty list is provided, elements are matched to colors in order by factor levels (if a factor) or based on first appearance in the design object. If the variable is numeric, should be an integer providing the number of intervals to split the variable into (defaults to 10).}
 
@@ -42,7 +42,7 @@ plot_gene_heatmap(
 
 \item{plotdims}{a numeric vector, the width and height (in inches) of the plotting object. Either the size of the pdf, or the size of the plotting window.}
 
-\item{my_heatmap_cols}{a vector of color names, typically the result of a call to \code{colorRampPalette}.}
+\item{my_heatmap_cols}{a vector of color names, typically the result of a call to \code{colorRampPalette}. If not provided, the "RdBu" palette from \code{RColorBrewer} is used.}
 
 \item{add_legend}{logical, whether to add a legend for the coloring of sample labels. If samples are colored by more than one variable, legends are output as separate plots. Defaults to \code{FALSE}.}
 
