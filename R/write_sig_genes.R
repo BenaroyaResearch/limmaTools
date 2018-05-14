@@ -54,7 +54,9 @@ write_sig_genes <-
         # update filename
         if (!is.null(threshold_col)) { 
           threshold_text <- "_threshold"
-        } else if ((is.null(fc_cut) | fc_cut <= 0) & (adj_p_cut <= 1)) {
+        } else if (is.null(fc_cut)) {
+          threshold_text <- paste0("_P", adj_p_cut)
+        } else if ((fc_cut <= 0) & (adj_p_cut <= 1)) {
           threshold_text <- paste0("_P", adj_p_cut)
         } else if ((fc_cut > 0) & (adj_p_cut <= 1)) {
           threshold_text <- paste0("_FC", round(2^(fc_cut*fc_adj_factor), 3), "_and_P", adj_p_cut)
