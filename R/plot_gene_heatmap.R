@@ -45,7 +45,7 @@ plot_gene_heatmap <-
            ...) {
     if (!is.null(order_by_var) & is.null(design)) stop("Cannot sort the libraries without annotation data.")
     
-    counts <- extract_counts(counts)
+    counts <- extract_counts(counts, return_class="matrix")
     
     if (any(dim(counts)<2)) stop("Counts object must include at least two genes and two libraries.")
     
