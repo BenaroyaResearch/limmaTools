@@ -14,7 +14,7 @@ filterGoanaOutput <-
     # load GO term ancestor-descendant relationships
     if (requireNamespace("GO.db", quietly = TRUE)) {
       goAncestorsAll <-
-        c(as.list(GOBPANCESTOR), as.list(GOCCANCESTOR), as.list(GOMFANCESTOR))
+        c(as.list(GO.db::GOBPANCESTOR), as.list(GO.db::GOCCANCESTOR), as.list(GO.db::GOMFANCESTOR))
     } else stop("This function requires the Bioconductor package 'GO.db'. Please install it to use this function.")
 
     # sort the input data frame by column of choice (default: significance)
